@@ -125,14 +125,11 @@ Tests cover:
 
 ## Hosted API
 
-(Add a link to your hosted API here after deployment, e.g., Render, Railway, or Vercel.)
-
-**Live URL:** [https://your-api.herokuapp.com](https://your-api.herokuapp.com)
+**Live URL:**  [https://social-app-api-hp49.onrender.com] 
 
 ## GitHub Repository
 
-(Replace with your actual repo link)
-[https://github.com/your-username/social-app-api](https://github.com/your-username/social-app-api)
+**Repo URL:** [https://github.com/your-username/social-app-api]
 
 ## License
 
