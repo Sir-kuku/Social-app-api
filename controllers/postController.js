@@ -1,6 +1,7 @@
-// src/controllers/postController.js // Handles all post-related operations: create, read, update, delete, publish
-const Post = require('../models/Post');  // main model for post operations
+// controllers/postController.js
+const Post = require('../models/Post');
 const User = require('../models/User');   // needed for author search
+const Like = require('../models/Like');   // needed for likedByMe flag
 
 /**
  * createPost
@@ -20,7 +21,7 @@ const createPost = async (req, res) => {
       title,
       content,
       tags,
-      author: req.user._id,   // from auth middleware
+      author: req.user._id,
     });
 
     res.status(201).json({ message: 'Post created (draft)', post });
@@ -44,7 +45,7 @@ const getAllPublished = async (req, res) => {
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
 
-    // ----- 2. BUILD FILTER OBJECT -----
+    // ----- 2. BUILD FILTER -----
     const filter = { state: 'published' };
 
     // Search by author name (case-insensitive)
@@ -57,7 +58,7 @@ const getAllPublished = async (req, res) => {
       }).select('_id');
 
       if (authors.length > 0) {
-        filter.author = { $in: authors.map((u) => u._id) };
+        filter.author = { $in: authors.map(u => u._id) };
       } else {
         return res.status(200).json({
           page,
@@ -69,14 +70,12 @@ const getAllPublished = async (req, res) => {
       }
     }
 
-    // Search by title (partial, case-insensitive)
     if (req.query.title) {
       filter.title = { $regex: req.query.title, $options: 'i' };
     }
 
-    // Search by tags (comma-separated)
     if (req.query.tags) {
-      const tagsArray = req.query.tags.split(',').map((t) => t.trim());
+      const tagsArray = req.query.tags.split(',').map(t => t.trim());
       filter.tags = { $in: tagsArray };
     }
 
@@ -104,7 +103,6 @@ const getAllPublished = async (req, res) => {
       .skip(skip)
       .limit(limit);
 
-    // ----- 5. RESPONSE -----
     res.status(200).json({
       page,
       limit,
@@ -136,6 +134,66 @@ const getPostById = async (req, res) => {
   } catch (error) {
     console.error('Get post by ID error:', error);
     res.status(500).json({ message: 'Server error while fetching post' });
+  }
+};
+
+/**
+ * getMyPosts
+ * - Auth required
+ * - Returns only posts belonging to the logged-in user
+ * - Paginated (default 20 per page)
+ * - Filterable by state (draft | published)
+ * - Includes likedByMe flag for the owner
+ */
+const getMyPosts = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const filter = { author: req.user._id };
+
+    if (req.query.state) {
+      const state = req.query.state;
+      if (['draft', 'published'].includes(state)) {
+        filter.state = state;
+      } else {
+        return res.status(400).json({ message: 'Invalid state filter. Use "draft" or "published".' });
+      }
+    }
+
+    const totalPosts = await Post.countDocuments(filter);
+    const totalPages = Math.ceil(totalPosts / limit);
+
+    const posts = await Post.find(filter)
+      .populate('author', 'first_name last_name username email')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // Add likedByMe flag
+    const postIds = posts.map(p => p._id);
+    const likes = await Like.find({
+      user: req.user._id,
+      post: { $in: postIds }
+    });
+    const likedPostIds = new Set(likes.map(l => l.post.toString()));
+
+    const postsWithLikeStatus = posts.map(post => ({
+      ...post.toObject(),
+      likedByMe: likedPostIds.has(post._id.toString())
+    }));
+
+    res.status(200).json({
+      page,
+      limit,
+      totalPosts,
+      totalPages,
+      posts: postsWithLikeStatus,
+    });
+  } catch (error) {
+    console.error('Get my posts error:', error);
+    res.status(500).json({ message: 'Server error while fetching your posts' });
   }
 };
 
@@ -224,61 +282,6 @@ const publishPost = async (req, res) => {
   } catch (error) {
     console.error('Publish post error:', error);
     res.status(500).json({ message: 'Server error while publishing post' });
-  }
-};
-
-/**
- * getMyPosts
- * - Auth required
- * - Returns only posts belonging to the logged-in user
- * - Paginated (default 20 per page)
- * - Filterable by state (draft | published)
- */
-const getMyPosts = async (req, res) => {
-  try {
-    // ----- 1. PAGINATION -----
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
-    const skip = (page - 1) * limit;
-
-    // ----- 2. BUILD FILTER -----
-    // Always filter by author = logged-in user
-    const filter = { author: req.user._id };
-
-    // Optional: filter by state (only 'draft' or 'published' are allowed)
-    if (req.query.state) {
-      const state = req.query.state;
-      if (['draft', 'published'].includes(state)) {
-        filter.state = state;
-      } else {
-        return res.status(400).json({ message: 'Invalid state filter. Use "draft" or "published".' });
-      }
-    }
-
-    // ----- 3. SORT (newest first by default) -----
-    const sortOption = { createdAt: -1 };
-
-    // ----- 4. QUERY -----
-    const totalPosts = await Post.countDocuments(filter);
-    const totalPages = Math.ceil(totalPosts / limit);
-
-    const posts = await Post.find(filter)
-      .populate('author', 'first_name last_name username email')
-      .sort(sortOption)
-      .skip(skip)
-      .limit(limit);
-
-    // ----- 5. RESPONSE -----
-    res.status(200).json({
-      page,
-      limit,
-      totalPosts,
-      totalPages,
-      posts,
-    });
-  } catch (error) {
-    console.error('Get my posts error:', error);
-    res.status(500).json({ message: 'Server error while fetching your posts' });
   }
 };
 
