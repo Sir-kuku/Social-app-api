@@ -1,43 +1,34 @@
-// src/app.js [Main Express application setup, middleware, and basic routes]
+// src/app.js
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const path = require('path');
 
-// Create the Express application
 const app = express();
 
-// Middleware – functions that run on every request
-app.use(cors());                // Allow cross-origin requests
-app.use(express.json());        // Automatically parse JSON bodies
-app.use(morgan('dev'));         // Log requests to console
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(morgan('dev'));
 
-// A simple health-check endpoint
-app.get('/', (req, res) => {
-  res.send('Social App API is running...');
-});
+// Serve static files from the 'public' folder (uses absolute path)
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// Routes
-const authRoutes = require('./routes/auth');
-app.use('/auth', authRoutes); // Mount auth routes at /auth
+// API Routes
+app.use('/auth', require('./routes/auth'));
+app.use('/posts', require('./routes/posts'));
+app.use('/me', require('./routes/me'));
+app.use('/feed', require('./routes/feed'));
 
-const postRoutes = require('./routes/posts');
-app.use('/posts', postRoutes);
-
-const meRoutes = require('./routes/me');
-app.use('/me', meRoutes);
-
-const feedRoutes = require('./routes/feed');
-app.use('/feed', feedRoutes);
-
-// 404 handler – if no route matches
+// 404 handler (for unknown API routes)
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Global error handler (catches errors from routes)
+// Global error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Something went wrong!' });
 });
 
-module.exports = app; // exported so we can test it with supertest
+module.exports = app;

@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Cozy Social</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; transition: background 0.3s, color 0.3s, border-color 0.3s; }
+    :root {
+      --bg: #faf3f0;
+      --bg-card: #ffffff;
+      --text: #3e3e3e;
+      --text-secondary: #7a7a7a;
+      --accent: #d4a373;
+      --accent-hover: #b5835a;
+      --danger: #e76f51;
+      --border: #e0d6cc;
+      --shadow: 0 8px 30px rgba(0,0,0,0.05);
+      --btn-text: #fff;
+      --gradient: linear-gradient(135deg, #fef9f4, #f5ebe0);
+      --logo-gradient: linear-gradient(45deg, #d4a373, #b5835a);
+    }
+    .dark {
+      --bg: #1a1a2e;
+      --bg-card: #2a2a40;
+      --text: #f0e6d3;
+      --text-secondary: #b0a090;
+      --accent: #e6a77e;
+      --accent-hover: #cf8c63;
+      --danger: #e76f51;
+      --border: #3a3a50;
+      --shadow: 0 8px 30px rgba(0,0,0,0.3);
+      --btn-text: #1a1a2e;
+      --gradient: linear-gradient(135deg, #1a1a2e, #2a1a3e);
+      --logo-gradient: linear-gradient(45deg, #e6a77e, #cf8c63);
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .app {
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-card);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 90vh;
+    }
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: var(--logo-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+    .theme-toggle {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text);
+      padding: 5px;
+      border-radius: 50%;
+      transition: transform 0.3s;
+    }
+    .theme-toggle:active { transform: scale(0.9); }
+
+    .auth-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+    }
+    .auth-card {
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    .auth-card h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: var(--logo-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1.5rem;
+    }
+    .form-field { margin-bottom: 1.2rem; }
+    .form-field input, .form-field textarea, .form-field select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+      font-family: inherit;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    .form-field input:focus, .form-field textarea:focus, .form-field select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(212,163,115,0.2);
+    }
+
+    /* Invalid input */
+    .form-field input.invalid {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 3px rgba(231,111,81,0.2);
+      animation: shake 0.3s ease-in-out;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+    }
+
+    /* Password eye toggle */
+    .password-wrapper {
+      position: relative;
+    }
+    .password-wrapper input {
+      padding-right: 42px;
+    }
+    .password-toggle {
+      position: absolute;
+      top: 50%;
+      right: 14px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      user-select: none;
+    }
+    .password-toggle:hover { color: var(--accent); }
+
+    /* Custom dropdown */
+    .custom-select {
+      position: relative;
+      width: 100%;
+    }
+    .custom-select select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      width: 100%;
+      padding: 12px 40px 12px 15px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      cursor: pointer;
+      outline: none;
+    }
+    .custom-select select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(212,163,115,0.2);
+    }
+    .custom-select::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 18px;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 8px solid var(--text-secondary);
+      pointer-events: none;
+    }
+    .custom-select select option {
+      background: var(--bg-card);
+      color: var(--text);
+    }
+
+    /* Styled search input */
+    .search-input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+      font-family: inherit;
+    }
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(212,163,115,0.2);
+    }
+
+    .btn {
+      background: var(--accent);
+      color: var(--btn-text);
+      border: none;
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 0.5rem;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn.outline {
+      background: transparent;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+    }
+    .message { margin-top: 1rem; font-size: 0.9rem; min-height: 1.2em; }
+    .message.error { color: var(--danger); }
+    .message.success { color: #2a9d8f; }
+    .toggle-link { margin-top: 1rem; color: var(--accent); cursor: pointer; font-size: 0.9rem; }
+
+    .main-app { display: flex; flex-direction: column; height: 100%; }
+    .tab-nav {
+      display: flex;
+      justify-content: space-around;
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-card);
+      position: sticky;
+      top: 57px;
+      z-index: 5;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 20px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .tab-btn.active { color: var(--accent); background: rgba(212,163,115,0.1); }
+    .tab-btn:hover { color: var(--accent); }
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.2rem;
+    }
+    .card {
+      background: var(--bg);
+      border-radius: 20px;
+      padding: 1.2rem;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      border: 1px solid var(--border);
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+    .avatar {
+      width: 40px; height: 40px;
+      background: var(--logo-gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+    }
+    .username { font-weight: 600; }
+    .time { font-size: 0.75rem; color: var(--text-secondary); }
+    .post-title { font-weight: 700; margin-bottom: 0.4rem; }
+    .post-text { white-space: pre-wrap; font-size: 0.95rem; }
+    .tags { display: flex; flex-wrap: wrap; gap: 5px; margin: 0.8rem 0; }
+    .tag { background: var(--accent); color: white; padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; }
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+      align-items: center;
+    }
+    .actions i { cursor: pointer; font-size: 1.2rem; color: var(--text-secondary); transition: color 0.2s; }
+    .actions i.liked { color: var(--danger); }
+    .like-count { font-size: 0.85rem; margin-left: 2px; }
+    .owner-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .owner-actions button {
+      background: var(--border);
+      border: none;
+      color: var(--text);
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .owner-actions .publish { background: var(--accent); color: white; }
+    .owner-actions .danger { background: var(--danger); color: white; }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--bg-card);
+      border-radius: 25px;
+      padding: 1.8rem;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .pagination { display: flex; gap: 5px; justify-content: center; margin-top: 1rem; flex-wrap: wrap; }
+    .pagination button { border: 1px solid var(--border); background: var(--bg); color: var(--text); padding: 5px 12px; border-radius: 10px; cursor: pointer; }
+    .pagination button.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+    @media (max-width: 500px) { body { padding: 0; } .app { border-radius: 0; min-height: 100vh; } }
+  </style>
+</head>
+<body>
+  <div class="app" id="appRoot"></div>
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <h3>Edit Post</h3>
+      <input type="hidden" id="editId">
+      <div class="form-field"><input id="editTitle" placeholder="Title"></div>
+      <div class="form-field"><textarea id="editContent" rows="4" placeholder="Content"></textarea></div>
+      <div class="form-field"><input id="editTags" placeholder="Tags (comma separated)"></div>
+      <button class="btn" id="saveEditBtn">Save</button>
+      <button class="btn outline" id="cancelEditBtn">Cancel</button>
+      <p class="message" id="editMsg"></p>
+    </div>
+  </div>
+
+  <script>
+    const API = '';
+    let state = {
+      token: localStorage.getItem('token'),
+      user: JSON.parse(localStorage.getItem('user') || 'null'),
+      currentPage: 'feed',
+      dark: localStorage.getItem('dark') === 'true'
+    };
+
+    if (state.dark) document.documentElement.classList.add('dark');
+
+    function apiCall(url, options = {}) {
+      const headers = { 'Content-Type': 'application/json', ...options.headers };
+      if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
+      return fetch(API + url, { ...options, headers })
+        .then(res => res.json().then(data => ({ status: res.status, ok: res.ok, data })));
+    }
+
+    // Simple email validation
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function renderAuth(screen = 'login') {
+      const root = document.getElementById('appRoot');
+      root.innerHTML = `
+        <div class="app-header">
+          <span class="logo">Cozy</span>
+          <button class="theme-toggle" onclick="toggleTheme()">${state.dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>'}</button>
+        </div>
+        <div class="auth-container">
+          <div class="auth-card">
+            <h1>${screen === 'login' ? 'Welcome back' : 'Join the coziness'}</h1>
+            <form id="authForm">
+              ${screen === 'signup' ? `
+                <div class="form-field"><input id="firstName" placeholder="First Name" required></div>
+                <div class="form-field"><input id="lastName" placeholder="Last Name" required></div>
+                <div class="form-field"><input id="username" placeholder="Username" required></div>
+              ` : ''}
+              <div class="form-field"><input id="emailOrUser" placeholder="${screen === 'signup' ? 'Email' : 'Email or Username'}" required></div>
+              <div class="form-field password-wrapper">
+                <input id="password" type="password" placeholder="Password" required>
+                <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+              </div>
+              <button type="submit" class="btn">${screen === 'signup' ? 'Sign Up' : 'Log In'}</button>
+            </form>
+            <p class="message" id="authMsg"></p>
+            <p class="toggle-link" id="toggleAuth">${screen === 'login' ? "Don't have an account? Sign up" : "Already have an account? Log in"}</p>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('toggleAuth').addEventListener('click', () => renderAuth(screen === 'login' ? 'signup' : 'login'));
+
+      document.getElementById('authForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('authMsg');
+        const password = document.getElementById('password').value;
+
+        // --- Email validation (signup only) ---
+        if (screen === 'signup') {
+          const emailInput = document.getElementById('emailOrUser');
+          const email = emailInput.value.trim();
+          emailInput.classList.remove('invalid'); // reset
+          if (!isValidEmail(email)) {
+            msg.className = 'message error';
+            msg.textContent = 'Please enter a valid email address (e.g., name@example.com).';
+            emailInput.classList.add('invalid');
+            emailInput.focus();
+            return;
+          }
+        }
+
+        try {
+          if (screen === 'signup') {
+            const body = {
+              first_name: document.getElementById('firstName').value,
+              last_name: document.getElementById('lastName').value,
+              username: document.getElementById('username').value,
+              email: document.getElementById('emailOrUser').value,
+              password
+            };
+            const { ok, data } = await apiCall('/auth/signup', { method: 'POST', body: JSON.stringify(body) });
+            if (ok) {
+              msg.className = 'message success'; msg.textContent = 'Account created! You can log in now.';
+              setTimeout(() => renderAuth('login'), 1500);
+            } else {
+              msg.className = 'message error'; msg.textContent = data.message || 'Signup failed';
+            }
+          } else {
+            const identifier = document.getElementById('emailOrUser').value;
+            const body = { [identifier.includes('@') ? 'email' : 'username']: identifier, password };
+            const { ok, data } = await apiCall('/auth/signin', { method: 'POST', body: JSON.stringify(body) });
+            if (ok && data.token) {
+              state.token = data.token;
+              state.user = data.user;
+              localStorage.setItem('token', data.token);
+              localStorage.setItem('user', JSON.stringify(data.user));
+              msg.className = 'message success'; msg.textContent = 'Logging in...';
+              renderMainApp();
+            } else {
+              msg.className = 'message error'; msg.textContent = data.message || 'Invalid credentials';
+            }
+          }
+        } catch (err) {
+          msg.className = 'message error'; msg.textContent = 'Network error. Please check your connection.';
+        }
+      });
+
+      const toggleBtn = document.getElementById('togglePassword');
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+          const passwordInput = document.getElementById('password');
+          const isPassword = passwordInput.type === 'password';
+          passwordInput.type = isPassword ? 'text' : 'password';
+          toggleBtn.className = isPassword ? 'fas fa-eye-slash password-toggle' : 'fas fa-eye password-toggle';
+        });
+      }
+    }
+
+    window.toggleTheme = function() {
+      state.dark = !state.dark;
+      document.documentElement.classList.toggle('dark', state.dark);
+      localStorage.setItem('dark', state.dark.toString());
+      const toggleBtn = document.querySelector('.theme-toggle');
+      if (toggleBtn) toggleBtn.innerHTML = state.dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    };
+
+    function renderMainApp() {
+      const root = document.getElementById('appRoot');
+      root.innerHTML = `
+        <div class="app-header">
+          <span class="logo">Cozy</span>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <button class="theme-toggle" onclick="toggleTheme()">${state.dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>'}</button>
+            <button class="btn outline" id="logoutBtn" style="width:auto; padding:6px 14px; font-size:0.8rem;">Logout</button>
+          </div>
+        </div>
+        <div class="main-app">
+          <div class="tab-nav">
+            <button class="tab-btn active" data-tab="feed">Feed</button>
+            <button class="tab-btn" data-tab="explore">Explore</button>
+            <button class="tab-btn" data-tab="create">Create</button>
+            <button class="tab-btn" data-tab="profile">Profile</button>
+          </div>
+          <div class="content-area" id="contentArea"></div>
+        </div>
+      `;
+
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.clear();
+        state.token = null; state.user = null;
+        renderAuth('login');
+      });
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          state.currentPage = btn.dataset.tab;
+          loadContent(state.currentPage);
+        });
+      });
+
+      loadContent('feed');
+    }
+
+    async function loadContent(page) {
+      switch(page) {
+        case 'feed': await loadFeed(); break;
+        case 'explore': await loadExplore(); break;
+        case 'create': renderCreatePost(); break;
+        case 'profile': await loadProfile(); break;
+      }
+    }
+
+    async function loadFeed(pageNum = 1) {
+      const { data } = await apiCall(`/feed?page=${pageNum}&limit=10`);
+      let html = '';
+      if (data?.posts?.length) data.posts.forEach(p => html += renderPostCard(p, false));
+      else html = '<p>No posts in your feed. Follow some users!</p>';
+      html += pagination(pageNum, data?.totalPages, loadFeed);
+      document.getElementById('contentArea').innerHTML = html;
+      attachPostEvents();
+    }
+
+    async function loadExplore(pageNum = 1) {
+      const searchTitle = document.getElementById('searchTitle')?.value || '';
+      const sort = document.getElementById('sortSelect')?.value || 'timestamp';
+      let url = `/posts?page=${pageNum}&limit=10&sort=${sort}`;
+      if (searchTitle) url += `&title=${encodeURIComponent(searchTitle)}`;
+      const { data } = await apiCall(url);
+      let html = `
+        <div style="display:flex; gap:10px; margin-bottom:1rem; flex-wrap:wrap; align-items:center;">
+          <input id="searchTitle" class="search-input" placeholder="Search by title..." style="flex:2; min-width:120px;">
+          <div class="custom-select" style="flex:1; min-width:140px;">
+            <select id="sortSelect">
+              <option value="timestamp">Newest</option>
+              <option value="like_count">Most Likes</option>
+              <option value="comment_count">Most Comments</option>
+            </select>
+          </div>
+          <button class="btn" id="searchBtn" style="flex:0 0 auto; padding:10px 18px;">Search</button>
+        </div>
+      `;
+      if (data?.posts?.length) data.posts.forEach(p => html += renderPostCard(p, false));
+      else html += '<p>No published posts found.</p>';
+      html += pagination(pageNum, data?.totalPages, loadExplore);
+      document.getElementById('contentArea').innerHTML = html;
+      document.getElementById('searchBtn')?.addEventListener('click', () => loadExplore(1));
+      attachPostEvents();
+    }
+
+    function renderCreatePost() {
+      document.getElementById('contentArea').innerHTML = `
+        <h3 style="margin-bottom:1rem;">✨ New Post</h3>
+        <div class="form-field"><input id="newTitle" placeholder="Title"></div>
+        <div class="form-field"><textarea id="newContent" rows="4" placeholder="What's on your mind?"></textarea></div>
+        <div class="form-field"><input id="newTags" placeholder="Tags (e.g., cozy, morning)"></div>
+        <button class="btn" id="submitPost">Post as Draft</button>
+        <p class="message" id="createMsg"></p>
+      `;
+      document.getElementById('submitPost').addEventListener('click', async () => {
+        const title = document.getElementById('newTitle').value;
+        const content = document.getElementById('newContent').value;
+        const tags = document.getElementById('newTags').value.split(',').map(t => t.trim()).filter(Boolean);
+        const { ok, data } = await apiCall('/posts', { method: 'POST', body: JSON.stringify({ title, content, tags }) });
+        const msg = document.getElementById('createMsg');
+        msg.className = 'message';
+        if (ok) {
+          msg.className += ' success'; msg.textContent = 'Post created (draft)!';
+          ['newTitle','newContent','newTags'].forEach(id => document.getElementById(id).value='');
+        } else {
+          msg.className += ' error'; msg.textContent = data.message || 'Failed';
+        }
+      });
+    }
+
+    async function loadProfile() {
+      const { data: myPosts } = await apiCall('/me/posts?limit=5');
+      const { data: following } = await apiCall('/me/following');
+      let html = `
+        <div style="text-align:center; margin-bottom:1.5rem;">
+          <div class="avatar" style="width:70px; height:70px; font-size:2rem; margin:0 auto;">${state.user.username.charAt(0).toUpperCase()}</div>
+          <h2>${state.user.username}</h2>
+          <p style="color:var(--text-secondary);">${state.user.first_name} ${state.user.last_name}</p>
+        </div>
+        <h3 style="margin-bottom: 0.8rem;">My Posts</h3>
+        <div class="custom-select" style="margin-bottom:1rem;">
+          <select id="stateFilter">
+            <option value="">All</option>
+            <option value="draft">Drafts</option>
+            <option value="published">Published</option>
+          </select>
+        </div>
+        <div id="profilePosts"></div>
+        <h3>Following (${following?.following?.length || 0})</h3>
+        <div id="followingList"></div>
+        <button class="btn outline" id="showFollowersBtn" style="margin-top:1rem;">Show Followers</button>
+        <div id="followersList" style="display:none;"></div>
+      `;
+      document.getElementById('contentArea').innerHTML = html;
+
+      async function loadProfilePosts() {
+        const stateFilter = document.getElementById('stateFilter').value;
+        let url = `/me/posts?limit=5`;
+        if (stateFilter) url += `&state=${stateFilter}`;
+        const { data } = await apiCall(url);
+        document.getElementById('profilePosts').innerHTML = data.posts.map(p => renderPostCard(p, true)).join('');
+        attachPostEvents();
+      }
+      document.getElementById('stateFilter').addEventListener('change', loadProfilePosts);
+      loadProfilePosts();
+
+      if (following?.following) {
+        document.getElementById('followingList').innerHTML = following.following.map(u => `
+          <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:10px;">
+            <span>${u.username}</span>
+            <button class="btn outline" onclick="unfollowUser('${u._id}')" style="width:auto; padding:4px 12px; font-size:0.8rem;">Unfollow</button>
+          </div>`).join('');
+      }
+      window.unfollowUser = async (userId) => {
+        await apiCall(`/me/follow/${userId}`, { method: 'DELETE' });
+        loadProfile();
+      };
+      document.getElementById('showFollowersBtn').addEventListener('click', async () => {
+        const div = document.getElementById('followersList');
+        if (div.style.display === 'none') {
+          const { data } = await apiCall('/me/followers');
+          div.innerHTML = '<h4>Followers</h4>' + (data.followers ? data.followers.map(u => `<p>${u.username}</p>`).join('') : '<p>None</p>');
+          div.style.display = 'block';
+        } else div.style.display = 'none';
+      });
+    }
+
+    function renderPostCard(post, isOwner = false) {
+      const authorName = post.author ? `${post.author.first_name} ${post.author.last_name}` : 'Unknown';
+      const avatarLetter = (post.author?.username || '?')[0].toUpperCase();
+      const stateBadge = post.state === 'draft' ? '<span style="background:var(--accent); color:white; padding:2px 8px; border-radius:10px; font-size:0.7rem;">Draft</span>' : '';
+      return `
+        <div class="card" data-post-id="${post._id}">
+          <div class="card-header">
+            <div class="avatar">${avatarLetter}</div>
+            <div>
+              <span class="username">${authorName} ${stateBadge}</span>
+              <div class="time">${new Date(post.createdAt).toLocaleString()}</div>
+            </div>
+          </div>
+          <div class="post-title">${post.title}</div>
+          <div class="post-text">${post.content}</div>
+          <div class="tags">${post.tags?.map(t => `<span class="tag">${t}</span>`).join('') || ''}</div>
+          <div class="actions">
+            <i class="${post.likedByMe ? 'fas fa-heart liked' : 'far fa-heart'}" data-action="like"></i>
+            <span class="like-count">${post.like_count}</span>
+          </div>
+          ${isOwner ? `
+            <div class="owner-actions">
+              <button class="publish" data-action="publish" ${post.state==='published'?'disabled':''}>Publish</button>
+              <button data-action="edit">Edit</button>
+              <button class="danger" data-action="delete">Delete</button>
+            </div>` : ''}
+        </div>`;
+    }
+
+    function attachPostEvents() {
+      document.querySelectorAll('[data-action="like"]').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const card = e.target.closest('.card');
+          const postId = card.dataset.postId;
+          const method = e.target.classList.contains('liked') ? 'DELETE' : 'POST';
+          const { ok } = await apiCall(`/posts/${postId}/like`, { method });
+          if (ok) {
+            e.target.classList.toggle('liked'); e.target.classList.toggle('far'); e.target.classList.toggle('fas');
+            const countSpan = card.querySelector('.like-count');
+            let count = parseInt(countSpan.textContent);
+            count = method === 'POST' ? count+1 : Math.max(0, count-1);
+            countSpan.textContent = count;
+          }
+        });
+      });
+      document.querySelectorAll('[data-action="publish"]').forEach(btn => btn.addEventListener('click', async (e) => {
+        const postId = e.target.closest('.card').dataset.postId;
+        await apiCall(`/posts/${postId}/publish`, { method: 'PUT' });
+        loadContent(state.currentPage);
+      }));
+      document.querySelectorAll('[data-action="edit"]').forEach(btn => btn.addEventListener('click', (e) => {
+        const card = e.target.closest('.card');
+        document.getElementById('editId').value = card.dataset.postId;
+        document.getElementById('editTitle').value = card.querySelector('.post-title').textContent;
+        document.getElementById('editContent').value = card.querySelector('.post-text').textContent;
+        document.getElementById('editTags').value = Array.from(card.querySelectorAll('.tag')).map(t => t.textContent).join(', ');
+        document.getElementById('editModal').classList.add('active');
+      }));
+      document.querySelectorAll('[data-action="delete"]').forEach(btn => btn.addEventListener('click', async (e) => {
+        if (!confirm('Delete?')) return;
+        const postId = e.target.closest('.card').dataset.postId;
+        await apiCall(`/posts/${postId}`, { method: 'DELETE' });
+        loadContent(state.currentPage);
+      }));
+    }
+
+    document.getElementById('saveEditBtn').addEventListener('click', async () => {
+      const id = document.getElementById('editId').value;
+      const title = document.getElementById('editTitle').value;
+      const content = document.getElementById('editContent').value;
+      const tags = document.getElementById('editTags').value.split(',').map(t => t.trim()).filter(Boolean);
+      const { ok, data } = await apiCall(`/posts/${id}`, { method: 'PATCH', body: JSON.stringify({ title, content, tags }) });
+      if (ok) { document.getElementById('editModal').classList.remove('active'); loadContent(state.currentPage); }
+      else { document.getElementById('editMsg').textContent = data.message || 'Error'; }
+    });
+    document.getElementById('cancelEditBtn').addEventListener('click', () => document.getElementById('editModal').classList.remove('active'));
+
+    function pagination(current, total, loadFn) {
+      if (!total || total <= 1) return '';
+      let html = '<div class="pagination">';
+      for (let i=1; i<=total; i++) html += `<button class="${i===current?'active':''}" onclick="(${loadFn.toString().replace(/\s/g,'')})(event, ${i})">${i}</button>`;
+      html += '</div>';
+      return html;
+    }
+
+    if (state.token && state.user) renderMainApp(); else renderAuth('login');
+  </script>
+</body>
+</html>
