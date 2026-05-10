@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Cozy Social</title>
+  <title>Kumora Social API</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; transition: background 0.3s, color 0.3s, border-color 0.3s; }
@@ -54,13 +54,14 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      min-height: 90vh;
+      min-height: 90vh;          /* fallback */
+      height: auto;
     }
     .app-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1rem 1.5rem;
+      padding: 0.8rem 1.5rem;
       background: var(--bg-card);
       border-bottom: 1px solid var(--border);
       position: sticky;
@@ -75,18 +76,29 @@
       background-clip: text;
       -webkit-text-fill-color: transparent;
       letter-spacing: -0.5px;
+      line-height: 1.2;
     }
+    /* Dark‑mode toggle button */
     .theme-toggle {
-      background: none;
+      background: rgba(128,128,128,0.1);
       border: none;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       cursor: pointer;
       color: var(--text);
-      padding: 5px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      transition: transform 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.2s, color 0.2s;
+      flex-shrink: 0;
     }
-    .theme-toggle:active { transform: scale(0.9); }
+    .theme-toggle:hover {
+      background: var(--accent);
+      color: white;
+      transform: scale(1.08);
+    }
 
     .auth-container {
       flex: 1;
@@ -129,175 +141,101 @@
       box-shadow: 0 0 0 3px rgba(212,163,115,0.2);
     }
 
-    /* Invalid input */
-    .form-field input.invalid {
-      border-color: var(--danger);
-      box-shadow: 0 0 0 3px rgba(231,111,81,0.2);
-      animation: shake 0.3s ease-in-out;
-    }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      50% { transform: translateX(5px); }
-      75% { transform: translateX(-5px); }
-    }
-
     /* Password eye toggle */
-    .password-wrapper {
-      position: relative;
-    }
-    .password-wrapper input {
-      padding-right: 42px;
-    }
+    .password-wrapper { position: relative; }
+    .password-wrapper input { padding-right: 42px; }
     .password-toggle {
-      position: absolute;
-      top: 50%;
-      right: 14px;
+      position: absolute; top: 50%; right: 14px;
       transform: translateY(-50%);
-      cursor: pointer;
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-      user-select: none;
+      cursor: pointer; color: var(--text-secondary);
+      font-size: 1.1rem; user-select: none;
     }
     .password-toggle:hover { color: var(--accent); }
 
-    /* Custom dropdown */
     .custom-select {
-      position: relative;
-      width: 100%;
+      position: relative; width: 100%;
     }
     .custom-select select {
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      width: 100%;
-      padding: 12px 40px 12px 15px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 0.95rem;
-      font-family: inherit;
-      cursor: pointer;
-      outline: none;
+      appearance: none; -webkit-appearance: none; -moz-appearance: none;
+      width: 100%; padding: 12px 40px 12px 15px;
+      border: 1px solid var(--border); border-radius: 12px;
+      background: var(--bg); color: var(--text);
+      font-size: 0.95rem; font-family: inherit;
+      cursor: pointer; outline: none;
     }
     .custom-select select:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(212,163,115,0.2);
     }
     .custom-select::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      right: 18px;
+      content: ''; position: absolute; top: 50%; right: 18px;
       transform: translateY(-50%);
-      width: 0;
-      height: 0;
+      width: 0; height: 0;
       border-left: 6px solid transparent;
       border-right: 6px solid transparent;
       border-top: 8px solid var(--text-secondary);
       pointer-events: none;
     }
-    .custom-select select option {
-      background: var(--bg-card);
-      color: var(--text);
-    }
-
-    /* Styled search input */
+    .custom-select select option { background: var(--bg-card); color: var(--text); }
     .search-input {
-      width: 100%;
-      padding: 12px 15px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 0.95rem;
-      outline: none;
-      font-family: inherit;
+      width: 100%; padding: 12px 15px;
+      border: 1px solid var(--border); border-radius: 12px;
+      background: var(--bg); color: var(--text);
+      font-size: 0.95rem; outline: none; font-family: inherit;
     }
-    .search-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(212,163,115,0.2);
-    }
+    .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(212,163,115,0.2); }
 
     .btn {
-      background: var(--accent);
-      color: var(--btn-text);
-      border: none;
-      padding: 12px 20px;
-      border-radius: 30px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 0.5rem;
+      background: var(--accent); color: var(--btn-text);
+      border: none; padding: 12px 20px; border-radius: 30px;
+      font-weight: 600; font-size: 1rem; cursor: pointer;
+      width: 100%; margin-top: 0.5rem;
       transition: background 0.2s, transform 0.1s;
     }
     .btn:active { transform: scale(0.97); }
-    .btn.outline {
-      background: transparent;
-      border: 2px solid var(--accent);
-      color: var(--accent);
-    }
+    .btn.outline { background: transparent; border: 2px solid var(--accent); color: var(--accent); }
     .message { margin-top: 1rem; font-size: 0.9rem; min-height: 1.2em; }
     .message.error { color: var(--danger); }
     .message.success { color: #2a9d8f; }
     .toggle-link { margin-top: 1rem; color: var(--accent); cursor: pointer; font-size: 0.9rem; }
 
-    .main-app { display: flex; flex-direction: column; height: 100%; }
-    .tab-nav {
+    /* Main dashboard layout – footer always at bottom */
+    .main-app {
       display: flex;
-      justify-content: space-around;
-      padding: 0.8rem 1rem;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-card);
-      position: sticky;
-      top: 57px;
-      z-index: 5;
+      flex-direction: column;
+      flex: 1;                /* take remaining vertical space */
+      min-height: 0;          /* allow shrinking */
+    }
+    .tab-nav {
+      display: flex; justify-content: space-around;
+      padding: 0.8rem 1rem; border-bottom: 1px solid var(--border);
+      background: var(--bg-card); position: sticky; top: 57px; z-index: 5;
       overflow-x: auto;
     }
     .tab-btn {
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      padding: 8px 12px;
-      border-radius: 20px;
-      transition: all 0.2s;
+      background: none; border: none; color: var(--text-secondary);
+      font-weight: 600; font-size: 0.9rem; cursor: pointer;
+      padding: 8px 12px; border-radius: 20px; transition: all 0.2s;
       white-space: nowrap;
     }
     .tab-btn.active { color: var(--accent); background: rgba(212,163,115,0.1); }
     .tab-btn:hover { color: var(--accent); }
     .content-area {
-      flex: 1;
+      flex: 1;                /* grows to fill space between tabs and footer */
       overflow-y: auto;
       padding: 1.2rem;
     }
+
     .card {
-      background: var(--bg);
-      border-radius: 20px;
-      padding: 1.2rem;
-      margin-bottom: 1.2rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      background: var(--bg); border-radius: 20px; padding: 1.2rem;
+      margin-bottom: 1.2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
       border: 1px solid var(--border);
     }
-    .card-header {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      margin-bottom: 0.8rem;
-    }
+    .card-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.8rem; }
     .avatar {
-      width: 40px; height: 40px;
-      background: var(--logo-gradient);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      color: white;
+      width: 40px; height: 40px; background: var(--logo-gradient);
+      border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; font-weight: bold; color: white;
     }
     .username { font-weight: 600; }
     .time { font-size: 0.75rem; color: var(--text-secondary); }
@@ -305,56 +243,47 @@
     .post-text { white-space: pre-wrap; font-size: 0.95rem; }
     .tags { display: flex; flex-wrap: wrap; gap: 5px; margin: 0.8rem 0; }
     .tag { background: var(--accent); color: white; padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; }
-    .actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 10px;
-      align-items: center;
-    }
+    .actions { display: flex; gap: 12px; margin-top: 10px; align-items: center; }
     .actions i { cursor: pointer; font-size: 1.2rem; color: var(--text-secondary); transition: color 0.2s; }
     .actions i.liked { color: var(--danger); }
     .like-count { font-size: 0.85rem; margin-left: 2px; }
-    .owner-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-      flex-wrap: wrap;
-    }
+    .owner-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
     .owner-actions button {
-      background: var(--border);
-      border: none;
-      color: var(--text);
-      padding: 4px 12px;
-      border-radius: 15px;
-      font-size: 0.75rem;
-      cursor: pointer;
+      background: var(--border); border: none; color: var(--text);
+      padding: 4px 12px; border-radius: 15px; font-size: 0.75rem; cursor: pointer;
     }
     .owner-actions .publish { background: var(--accent); color: white; }
     .owner-actions .danger { background: var(--danger); color: white; }
 
     .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 100;
     }
     .modal.active { display: flex; }
     .modal-content {
-      background: var(--bg-card);
-      border-radius: 25px;
-      padding: 1.8rem;
-      width: 90%;
-      max-width: 400px;
+      background: var(--bg-card); border-radius: 25px; padding: 1.8rem;
+      width: 90%; max-width: 400px;
     }
 
     .pagination { display: flex; gap: 5px; justify-content: center; margin-top: 1rem; flex-wrap: wrap; }
     .pagination button { border: 1px solid var(--border); background: var(--bg); color: var(--text); padding: 5px 12px; border-radius: 10px; cursor: pointer; }
     .pagination button.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-    @media (max-width: 500px) { body { padding: 0; } .app { border-radius: 0; min-height: 100vh; } }
+    /* Footer – pinned to bottom */
+    .app-footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      border-top: 1px solid var(--border);
+      background: var(--bg-card);
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 500px) {
+      body { padding: 0; }
+      .app { border-radius: 0; min-height: 100vh; }
+    }
   </style>
 </head>
 <body>
@@ -390,57 +319,89 @@
         .then(res => res.json().then(data => ({ status: res.status, ok: res.ok, data })));
     }
 
-    // Simple email validation
-    function isValidEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
+    function isValidEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
 
-    function renderAuth(screen = 'login') {
+    // ---------- GUEST EXPLORE ----------
+    function renderGuestExplore() {
       const root = document.getElementById('appRoot');
       root.innerHTML = `
         <div class="app-header">
-          <span class="logo">Social App Api</span>
-          <button class="theme-toggle" onclick="toggleTheme()">${state.dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>'}</button>
-        </div>
-        <div class="auth-container">
-          <div class="auth-card">
-            <h1>${screen === 'login' ? 'Active Again' : 'Activate Mode'}</h1>
-            <form id="authForm">
-              ${screen === 'signup' ? `
-                <div class="form-field"><input id="firstName" placeholder="First Name" required></div>
-                <div class="form-field"><input id="lastName" placeholder="Last Name" required></div>
-                <div class="form-field"><input id="username" placeholder="Username" required></div>
-              ` : ''}
-              <div class="form-field"><input id="emailOrUser" placeholder="${screen === 'signup' ? 'Email' : 'Email or Username'}" required></div>
-              <div class="form-field password-wrapper">
-                <input id="password" type="password" placeholder="Password" required>
-                <i class="fas fa-eye password-toggle" id="togglePassword"></i>
-              </div>
-              <button type="submit" class="btn">${screen === 'signup' ? 'Sign Up' : 'Log In'}</button>
-            </form>
-            <p class="message" id="authMsg"></p>
-            <p class="toggle-link" id="toggleAuth">${screen === 'login' ? "Don't have an account? Sign up" : "Already have an account? Log in"}</p>
+          <span class="logo">Kumora</span>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">
+              ${state.dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>'}
+            </button>
+            <button class="btn outline" id="loginLinkBtn" style="width:auto; padding:6px 14px; font-size:0.8rem;">Login / Sign Up</button>
           </div>
+        </div>
+        <div class="main-app">
+          <div class="tab-nav">
+            <button class="tab-btn active" data-tab="explore">Explore</button>
+          </div>
+          <div class="content-area" id="contentArea"></div>
+          <div class="app-footer">Built by Kuku Mubaraq Afolabbi</div>
+        </div>
+      `;
+      document.getElementById('loginLinkBtn').addEventListener('click', () => {
+        renderAuth('login', true);
+      });
+      loadExplore();
+    }
+
+    // ---------- AUTH SCREENS ----------
+    function renderAuth(screen = 'login', showGuestLink = false) {
+      const root = document.getElementById('appRoot');
+      root.innerHTML = `
+        <div class="app-header">
+          <span class="logo">Kumora</span>
+          <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">
+            ${state.dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>'}
+          </button>
+        </div>
+        <div class="main-app" style="display:flex; flex-direction:column; flex:1;">
+          <div class="auth-container">
+            <div class="auth-card">
+              <h1>${screen === 'login' ? 'Enter Kumora' : 'Join Kumora'}</h1>
+              <form id="authForm">
+                ${screen === 'signup' ? `
+                  <div class="form-field"><input id="firstName" placeholder="First Name" required></div>
+                  <div class="form-field"><input id="lastName" placeholder="Last Name" required></div>
+                  <div class="form-field"><input id="username" placeholder="Username" required></div>
+                ` : ''}
+                <div class="form-field"><input id="emailOrUser" placeholder="${screen === 'signup' ? 'Email' : 'Email or Username'}" required></div>
+                <div class="form-field password-wrapper">
+                  <input id="password" type="password" placeholder="Password" required>
+                  <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+                </div>
+                <button type="submit" class="btn">${screen === 'signup' ? 'Sign Up' : 'Log In'}</button>
+              </form>
+              <p class="message" id="authMsg"></p>
+              <p class="toggle-link" id="toggleAuth">${screen === 'login' ? "Don't have an account? Sign up" : "Already have an account? Log in"}</p>
+              ${showGuestLink ? `<p class="toggle-link" id="guestLink">Continue as guest</p>` : ''}
+            </div>
+          </div>
+          <div class="app-footer">Built by Kuku Mubaraq Afolabbi</div>
         </div>
       `;
 
-      document.getElementById('toggleAuth').addEventListener('click', () => renderAuth(screen === 'login' ? 'signup' : 'login'));
+      document.getElementById('toggleAuth')?.addEventListener('click', () => {
+        renderAuth(screen === 'login' ? 'signup' : 'login', showGuestLink);
+      });
+
+      if (showGuestLink) {
+        document.getElementById('guestLink').addEventListener('click', () => renderGuestExplore());
+      }
 
       document.getElementById('authForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const msg = document.getElementById('authMsg');
         const password = document.getElementById('password').value;
 
-        // --- Email validation (signup only) ---
         if (screen === 'signup') {
-          const emailInput = document.getElementById('emailOrUser');
-          const email = emailInput.value.trim();
-          emailInput.classList.remove('invalid'); // reset
+          const email = document.getElementById('emailOrUser').value.trim();
           if (!isValidEmail(email)) {
             msg.className = 'message error';
-            msg.textContent = 'Please enter a valid email address (e.g., name@example.com).';
-            emailInput.classList.add('invalid');
-            emailInput.focus();
+            msg.textContent = 'Please enter a valid email address.';
             return;
           }
         }
@@ -456,10 +417,12 @@
             };
             const { ok, data } = await apiCall('/auth/signup', { method: 'POST', body: JSON.stringify(body) });
             if (ok) {
-              msg.className = 'message success'; msg.textContent = 'Account created! You can log in now.';
-              setTimeout(() => renderAuth('login'), 1500);
+              msg.className = 'message success';
+              msg.textContent = 'Account created! You can log in now.';
+              setTimeout(() => renderAuth('login', false), 1500);
             } else {
-              msg.className = 'message error'; msg.textContent = data.message || 'Signup failed';
+              msg.className = 'message error';
+              msg.textContent = data.message || 'Signup failed';
             }
           } else {
             const identifier = document.getElementById('emailOrUser').value;
@@ -470,23 +433,26 @@
               state.user = data.user;
               localStorage.setItem('token', data.token);
               localStorage.setItem('user', JSON.stringify(data.user));
-              msg.className = 'message success'; msg.textContent = 'Logging in...';
+              msg.className = 'message success';
+              msg.textContent = 'Logging in...';
               renderMainApp();
             } else {
-              msg.className = 'message error'; msg.textContent = data.message || 'Invalid credentials';
+              msg.className = 'message error';
+              msg.textContent = data.message || 'Invalid credentials';
             }
           }
         } catch (err) {
-          msg.className = 'message error'; msg.textContent = 'Network error. Please check your connection.';
+          msg.className = 'message error';
+          msg.textContent = 'Network error. Please check your connection.';
         }
       });
 
       const toggleBtn = document.getElementById('togglePassword');
       if (toggleBtn) {
         toggleBtn.addEventListener('click', () => {
-          const passwordInput = document.getElementById('password');
-          const isPassword = passwordInput.type === 'password';
-          passwordInput.type = isPassword ? 'text' : 'password';
+          const pass = document.getElementById('password');
+          const isPassword = pass.type === 'password';
+          pass.type = isPassword ? 'text' : 'password';
           toggleBtn.className = isPassword ? 'fas fa-eye-slash password-toggle' : 'fas fa-eye password-toggle';
         });
       }
@@ -500,13 +466,16 @@
       if (toggleBtn) toggleBtn.innerHTML = state.dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
     };
 
+    // ---------- MAIN APP (DASHBOARD) ----------
     function renderMainApp() {
       const root = document.getElementById('appRoot');
       root.innerHTML = `
         <div class="app-header">
-          <span class="logo">Social App Api</span>
+          <span class="logo">Kumora</span>
           <div style="display:flex; gap:10px; align-items:center;">
-            <button class="theme-toggle" onclick="toggleTheme()">${state.dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>'}</button>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">
+              ${state.dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>'}
+            </button>
             <button class="btn outline" id="logoutBtn" style="width:auto; padding:6px 14px; font-size:0.8rem;">Logout</button>
           </div>
         </div>
@@ -518,13 +487,14 @@
             <button class="tab-btn" data-tab="profile">Profile</button>
           </div>
           <div class="content-area" id="contentArea"></div>
+          <div class="app-footer">Built by Kuku Mubaraq Afolabbi</div>
         </div>
       `;
 
       document.getElementById('logoutBtn').addEventListener('click', () => {
         localStorage.clear();
         state.token = null; state.user = null;
-        renderAuth('login');
+        renderAuth('login', true);
       });
 
       document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -559,30 +529,47 @@
     }
 
     async function loadExplore(pageNum = 1) {
-      const searchTitle = document.getElementById('searchTitle')?.value || '';
-      const sort = document.getElementById('sortSelect')?.value || 'timestamp';
-      let url = `/posts?page=${pageNum}&limit=10&sort=${sort}`;
-      if (searchTitle) url += `&title=${encodeURIComponent(searchTitle)}`;
-      const { data } = await apiCall(url);
-      let html = `
-        <div style="display:flex; gap:10px; margin-bottom:1rem; flex-wrap:wrap; align-items:center;">
-          <input id="searchTitle" class="search-input" placeholder="Search by title..." style="flex:2; min-width:120px;">
-          <div class="custom-select" style="flex:1; min-width:140px;">
-            <select id="sortSelect">
-              <option value="timestamp">Newest</option>
-              <option value="like_count">Most Likes</option>
-              <option value="comment_count">Most Comments</option>
-            </select>
+      try {
+        const searchTitle = document.getElementById('searchTitle')?.value || '';
+        const sort = document.getElementById('sortSelect')?.value || 'timestamp';
+        let url = `/posts?page=${pageNum}&limit=10&sort=${sort}`;
+        if (searchTitle) url += `&title=${encodeURIComponent(searchTitle)}`;
+
+        let result;
+        if (state.token) {
+          result = await apiCall(url);
+        } else {
+          const res = await fetch(API + url);
+          const data = await res.json();
+          result = { ok: res.ok, data };
+        }
+
+        const { data } = result;
+        let html = `
+          <div style="display:flex; gap:10px; margin-bottom:1rem; flex-wrap:wrap; align-items:center;">
+            <input id="searchTitle" class="search-input" placeholder="Search by title..." style="flex:2; min-width:120px;">
+            <div class="custom-select" style="flex:1; min-width:140px;">
+              <select id="sortSelect">
+                <option value="timestamp">Newest</option>
+                <option value="like_count">Most Likes</option>
+                <option value="comment_count">Most Comments</option>
+              </select>
+            </div>
+            <button class="btn" id="searchBtn" style="flex:0 0 auto; padding:10px 18px;">Search</button>
           </div>
-          <button class="btn" id="searchBtn" style="flex:0 0 auto; padding:10px 18px;">Search</button>
-        </div>
-      `;
-      if (data?.posts?.length) data.posts.forEach(p => html += renderPostCard(p, false));
-      else html += '<p>No published posts found.</p>';
-      html += pagination(pageNum, data?.totalPages, loadExplore);
-      document.getElementById('contentArea').innerHTML = html;
-      document.getElementById('searchBtn')?.addEventListener('click', () => loadExplore(1));
-      attachPostEvents();
+        `;
+        if (data?.posts?.length) {
+          data.posts.forEach(p => html += renderPostCard(p, false));
+        } else {
+          html += '<p>No published posts found.</p>';
+        }
+        html += pagination(pageNum, data?.totalPages, loadExplore);
+        document.getElementById('contentArea').innerHTML = html;
+        document.getElementById('searchBtn')?.addEventListener('click', () => loadExplore(1));
+        attachPostEvents();
+      } catch (err) {
+        document.getElementById('contentArea').innerHTML = '<p>Error loading posts. Please try again later.</p>';
+      }
     }
 
     function renderCreatePost() {
@@ -699,6 +686,11 @@
     function attachPostEvents() {
       document.querySelectorAll('[data-action="like"]').forEach(btn => {
         btn.addEventListener('click', async (e) => {
+          if (!state.token) {
+            alert('Please log in to like posts.');
+            renderAuth('login', true);
+            return;
+          }
           const card = e.target.closest('.card');
           const postId = card.dataset.postId;
           const method = e.target.classList.contains('liked') ? 'DELETE' : 'POST';
@@ -712,11 +704,13 @@
           }
         });
       });
+
       document.querySelectorAll('[data-action="publish"]').forEach(btn => btn.addEventListener('click', async (e) => {
         const postId = e.target.closest('.card').dataset.postId;
         await apiCall(`/posts/${postId}/publish`, { method: 'PUT' });
         loadContent(state.currentPage);
       }));
+
       document.querySelectorAll('[data-action="edit"]').forEach(btn => btn.addEventListener('click', (e) => {
         const card = e.target.closest('.card');
         document.getElementById('editId').value = card.dataset.postId;
@@ -725,6 +719,7 @@
         document.getElementById('editTags').value = Array.from(card.querySelectorAll('.tag')).map(t => t.textContent).join(', ');
         document.getElementById('editModal').classList.add('active');
       }));
+
       document.querySelectorAll('[data-action="delete"]').forEach(btn => btn.addEventListener('click', async (e) => {
         if (!confirm('Delete?')) return;
         const postId = e.target.closest('.card').dataset.postId;
@@ -752,7 +747,12 @@
       return html;
     }
 
-    if (state.token && state.user) renderMainApp(); else renderAuth('login');
+    // ---------- INITIAL LOAD ----------
+    if (state.token && state.user) {
+      renderMainApp();
+    } else {
+      renderGuestExplore();
+    }
   </script>
 </body>
 </html>

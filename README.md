@@ -1,8 +1,10 @@
-# Social App API
+# Kumora Social API
 
 A production-quality REST API for a social media platform built with Node.js, Express, MongoDB, and Mongoose.  
 It supports user authentication, posts (drafts and published), follows, likes, and a personalized feed.  
 The API is fully tested with Jest and Supertest.
+Built by **Kuku Mubaraq Afolabbi**.
+
 
 ## Features
 
