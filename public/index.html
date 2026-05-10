@@ -52,18 +52,17 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      /* full viewport height */
       margin: 0;
-      padding: 0;
+      padding: 10px;
+      /* small gap around the card */
       overflow: hidden;
-      /* prevent whole‑page scrollbar */
     }
 
     .app {
       width: 100%;
       max-width: 480px;
-      height: 100vh;
-      /* fills the screen */
+      height: calc(100vh - 20px);
+      /* leaves small gap top & bottom */
       background: var(--bg-card);
       border-radius: 30px;
       box-shadow: var(--shadow);
@@ -306,9 +305,7 @@
       display: flex;
       flex-direction: column;
       flex: 1;
-      /* take remaining vertical space */
       min-height: 0;
-      /* allow shrinking */
     }
 
     .tab-nav {
@@ -347,9 +344,28 @@
 
     .content-area {
       flex: 1;
-      /* grows to fill space between tabs and footer */
       overflow-y: auto;
       padding: 1.2rem;
+    }
+
+    /* ---------- CUSTOM SCROLLBAR ---------- */
+    .content-area::-webkit-scrollbar {
+      width: 8px;
+    }
+    .content-area::-webkit-scrollbar-track {
+      background: var(--bg);
+      border-radius: 10px;
+    }
+    .content-area::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 10px;
+    }
+    .content-area::-webkit-scrollbar-thumb:hover {
+      background: var(--accent);
+    }
+    .content-area {
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) var(--bg);
     }
 
     .card {
@@ -489,6 +505,40 @@
       max-width: 400px;
     }
 
+    /* ---- Floating toast for guest like prompt ---- */
+    .toast-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+    }
+    .toast-overlay.active { display: flex; }
+    .toast-card {
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      max-width: 320px;
+      width: 90%;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+      border: 1px solid var(--border);
+    }
+    .toast-card p {
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+      color: var(--text);
+    }
+    .toast-card .btn {
+      width: auto;
+      display: inline-block;
+      padding: 10px 24px;
+      margin: 0 6px;
+    }
+
     .pagination {
       display: flex;
       gap: 5px;
@@ -527,7 +577,6 @@
       body {
         padding: 0;
       }
-
       .app {
         border-radius: 0;
         min-height: 100vh;
@@ -551,6 +600,15 @@
     </div>
   </div>
 
+  <!-- Guest like prompt toast (hidden by default) -->
+  <div class="toast-overlay" id="guestLikeToast">
+    <div class="toast-card">
+      <p>✨ Please log in to like posts.</p>
+      <button class="btn" id="toastLoginBtn">Log In</button>
+      <button class="btn outline" id="toastCancelBtn">Cancel</button>
+    </div>
+  </div>
+
   <script>
     const API = '';
     let state = {
@@ -570,6 +628,21 @@
     }
 
     function isValidEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+
+    // ---------- CUSTOM TOAST / MODAL ----------
+    function showGuestLikePrompt() {
+      document.getElementById('guestLikeToast').classList.add('active');
+    }
+    function hideGuestLikePrompt() {
+      document.getElementById('guestLikeToast').classList.remove('active');
+    }
+
+    // Toast button events (only once)
+    document.getElementById('toastLoginBtn').addEventListener('click', () => {
+      hideGuestLikePrompt();
+      renderAuth('login', true);
+    });
+    document.getElementById('toastCancelBtn').addEventListener('click', hideGuestLikePrompt);
 
     // ---------- GUEST EXPLORE ----------
     function renderGuestExplore() {
@@ -937,8 +1010,7 @@
       document.querySelectorAll('[data-action="like"]').forEach(btn => {
         btn.addEventListener('click', async (e) => {
           if (!state.token) {
-            alert('Please log in to like posts.');
-            renderAuth('login', true);
+            showGuestLikePrompt();   // <-- replaced alert with custom toast
             return;
           }
           const card = e.target.closest('.card');
