@@ -12,8 +12,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 // Serve static files from the 'public' folder (uses absolute path)
-app.use(express.static(path.join(__dirname, '..', 'public')));
-
+app.use(express.static(path.join(__dirname, 'public')));
 // API Routes
 app.use('/auth', require('./routes/auth'));
 app.use('/posts', require('./routes/posts'));
