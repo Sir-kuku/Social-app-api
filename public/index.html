@@ -399,12 +399,12 @@
       const root = document.getElementById('appRoot');
       root.innerHTML = `
         <div class="app-header">
-          <span class="logo">Cozy</span>
+          <span class="logo">Social App Api</span>
           <button class="theme-toggle" onclick="toggleTheme()">${state.dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>'}</button>
         </div>
         <div class="auth-container">
           <div class="auth-card">
-            <h1>${screen === 'login' ? 'Welcome back' : 'Join the coziness'}</h1>
+            <h1>${screen === 'login' ? 'Active Again' : 'Activate Mode'}</h1>
             <form id="authForm">
               ${screen === 'signup' ? `
                 <div class="form-field"><input id="firstName" placeholder="First Name" required></div>
@@ -504,7 +504,7 @@
       const root = document.getElementById('appRoot');
       root.innerHTML = `
         <div class="app-header">
-          <span class="logo">Cozy</span>
+          <span class="logo">Social App Api</span>
           <div style="display:flex; gap:10px; align-items:center;">
             <button class="theme-toggle" onclick="toggleTheme()">${state.dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>'}</button>
             <button class="btn outline" id="logoutBtn" style="width:auto; padding:6px 14px; font-size:0.8rem;">Logout</button>
