@@ -619,6 +619,28 @@
         min-height: 100vh;
       }
     }
+
+    /* Smoother dark-mode transition */
+    html {
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    body {
+      transition: background-color 0.5s ease;
+    }
+
+    .app {
+      transition: background-color 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    /* Toggle button rotation */
+    .theme-toggle i {
+      transition: transform 0.4s ease;
+    }
+
+    .theme-toggle:active i {
+      transform: rotate(90deg);
+    }
   </style>
 </head>
 
