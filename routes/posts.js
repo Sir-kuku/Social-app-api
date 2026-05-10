@@ -13,7 +13,8 @@ const {
 const { likePost, unlikePost } = require('../controllers/likeController');
 
 // Public routes
-router.get('/', getAllPublished);            // GET /posts
+const { optionalAuth } = require('../middleware/optionalAuth');
+router.get('/', optionalAuth, getAllPublished);
 router.get('/:id', getPostById);             // GET /posts/:id
 
 // Protected routes (auth required)

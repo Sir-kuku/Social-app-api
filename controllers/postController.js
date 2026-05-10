@@ -40,15 +40,12 @@ const createPost = async (req, res) => {
  */
 const getAllPublished = async (req, res) => {
   try {
-    // ----- 1. PAGINATION -----
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
 
-    // ----- 2. BUILD FILTER -----
     const filter = { state: 'published' };
 
-    // Search by author name (case-insensitive)
     if (req.query.author) {
       const authors = await User.find({
         $or: [
@@ -60,13 +57,7 @@ const getAllPublished = async (req, res) => {
       if (authors.length > 0) {
         filter.author = { $in: authors.map(u => u._id) };
       } else {
-        return res.status(200).json({
-          page,
-          limit,
-          totalPosts: 0,
-          totalPages: 0,
-          posts: [],
-        });
+        return res.status(200).json({ page, limit, totalPosts: 0, totalPages: 0, posts: [] });
       }
     }
 
@@ -79,7 +70,6 @@ const getAllPublished = async (req, res) => {
       filter.tags = { $in: tagsArray };
     }
 
-    // ----- 3. SORTING -----
     let sortOption = {};
     if (req.query.sort) {
       const sortField = req.query.sort;
@@ -93,7 +83,6 @@ const getAllPublished = async (req, res) => {
       sortOption = { createdAt: -1 };
     }
 
-    // ----- 4. QUERY -----
     const totalPosts = await Post.countDocuments(filter);
     const totalPages = Math.ceil(totalPosts / limit);
 
@@ -103,12 +92,25 @@ const getAllPublished = async (req, res) => {
       .skip(skip)
       .limit(limit);
 
+    // Add likedByMe if the user is authenticated
+    let postsWithLikeStatus = posts;
+    if (req.user) {
+      const postIds = posts.map(p => p._id);
+      const likes = await Like.find({ user: req.user._id, post: { $in: postIds } });
+      const likedPostIds = new Set(likes.map(l => l.post.toString()));
+
+      postsWithLikeStatus = posts.map(post => ({
+        ...post.toObject(),
+        likedByMe: likedPostIds.has(post._id.toString()),
+      }));
+    }
+
     res.status(200).json({
       page,
       limit,
       totalPosts,
       totalPages,
-      posts,
+      posts: postsWithLikeStatus,
     });
   } catch (error) {
     console.error('Get published posts error:', error);
