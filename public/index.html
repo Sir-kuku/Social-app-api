@@ -1,20 +1,17 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Kumora Social API</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      transition:
-        background 0.3s,
-        color 0.3s,
-        border-color 0.3s;
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
     }
 
     :root {
@@ -48,11 +45,7 @@
     }
 
     body {
-      font-family:
-        "Segoe UI",
-        system-ui,
-        -apple-system,
-        sans-serif;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       background: var(--bg);
       color: var(--text);
       display: flex;
@@ -111,10 +104,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition:
-        background 0.2s,
-        transform 0.2s,
-        color 0.2s;
+      transition: background 0.2s, transform 0.2s, color 0.2s;
       flex-shrink: 0;
     }
 
@@ -166,9 +156,7 @@
       font-size: 0.95rem;
       outline: none;
       font-family: inherit;
-      transition:
-        border 0.2s,
-        box-shadow 0.2s;
+      transition: border 0.2s, box-shadow 0.2s;
     }
 
     .form-field input:focus,
@@ -228,7 +216,7 @@
     }
 
     .custom-select::after {
-      content: "";
+      content: '';
       position: absolute;
       top: 50%;
       right: 18px;
@@ -274,9 +262,7 @@
       cursor: pointer;
       width: 100%;
       margin-top: 0.5rem;
-      transition:
-        background 0.2s,
-        transform 0.1s;
+      transition: background 0.2s, transform 0.1s;
     }
 
     .btn:active {
@@ -360,21 +346,17 @@
     .content-area::-webkit-scrollbar {
       width: 8px;
     }
-
     .content-area::-webkit-scrollbar-track {
       background: var(--bg);
       border-radius: 10px;
     }
-
     .content-area::-webkit-scrollbar-thumb {
       background: var(--border);
       border-radius: 10px;
     }
-
     .content-area::-webkit-scrollbar-thumb:hover {
       background: var(--accent);
     }
-
     .content-area {
       scrollbar-width: thin;
       scrollbar-color: var(--border) var(--bg);
@@ -453,11 +435,15 @@
       cursor: pointer;
       font-size: 1.2rem;
       color: var(--text-secondary);
-      transition: color 0.2s;
+      transition: color 0.2s, transform 0.1s;
     }
 
     .actions i.liked {
       color: var(--danger);
+    }
+
+    .actions i.like-animate {
+      transform: scale(1.3);
     }
 
     .like-count {
@@ -492,7 +478,6 @@
       color: white;
     }
 
-    /* Follow button */
     .follow-btn {
       background: var(--border);
       border: none;
@@ -503,7 +488,6 @@
       cursor: pointer;
       margin-top: 0;
     }
-
     .follow-btn.following {
       background: var(--accent);
       color: white;
@@ -537,21 +521,14 @@
     .toast-overlay {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4);
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
       backdrop-filter: blur(4px);
       justify-content: center;
       align-items: center;
       z-index: 200;
     }
-
-    .toast-overlay.active {
-      display: flex;
-    }
-
+    .toast-overlay.active { display: flex; }
     .toast-card {
       background: var(--bg-card);
       border-radius: 20px;
@@ -559,16 +536,14 @@
       text-align: center;
       max-width: 320px;
       width: 90%;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
       border: 1px solid var(--border);
     }
-
     .toast-card p {
       margin-bottom: 1.5rem;
       font-size: 1rem;
       color: var(--text);
     }
-
     .toast-card .btn {
       width: auto;
       display: inline-block;
@@ -609,37 +584,33 @@
       flex-shrink: 0;
     }
 
+    /* Avatar color picker */
+    .avatar-color-picker {
+      display: flex;
+      gap: 8px;
+      margin-top: 0.5rem;
+      justify-content: center;
+    }
+    .color-circle {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .color-circle.selected {
+      border-color: var(--text);
+    }
+
     @media (max-width: 500px) {
       body {
         padding: 0;
       }
-
       .app {
         border-radius: 0;
         min-height: 100vh;
       }
-    }
-
-    /* Smoother dark-mode transition */
-    html {
-      transition: background-color 0.5s ease, color 0.5s ease;
-    }
-
-    body {
-      transition: background-color 0.5s ease;
-    }
-
-    .app {
-      transition: background-color 0.5s ease, box-shadow 0.5s ease;
-    }
-
-    /* Toggle button rotation */
-    .theme-toggle i {
-      transition: transform 0.4s ease;
-    }
-
-    .theme-toggle:active i {
-      transform: rotate(90deg);
     }
   </style>
 </head>
@@ -649,16 +620,10 @@
   <div class="modal" id="editModal">
     <div class="modal-content">
       <h3>Edit Post</h3>
-      <input type="hidden" id="editId" />
-      <div class="form-field">
-        <input id="editTitle" placeholder="Title" />
-      </div>
-      <div class="form-field">
-        <textarea id="editContent" rows="4" placeholder="Content"></textarea>
-      </div>
-      <div class="form-field">
-        <input id="editTags" placeholder="Tags (comma separated)" />
-      </div>
+      <input type="hidden" id="editId">
+      <div class="form-field"><input id="editTitle" placeholder="Title"></div>
+      <div class="form-field"><textarea id="editContent" rows="4" placeholder="Content"></textarea></div>
+      <div class="form-field"><input id="editTags" placeholder="Tags (comma separated)"></div>
       <button class="btn" id="saveEditBtn">Save</button>
       <button class="btn outline" id="cancelEditBtn">Cancel</button>
       <p class="message" id="editMsg"></p>
@@ -674,62 +639,57 @@
   </div>
 
   <script>
-    const API = "";
+    const API = '';
     let state = {
-      token: localStorage.getItem("token"),
-      user: JSON.parse(localStorage.getItem("user") || "null"),
-      currentPage: "feed",
-      dark: localStorage.getItem("dark") === "true",
+      token: localStorage.getItem('token'),
+      user: JSON.parse(localStorage.getItem('user') || 'null'),
+      currentPage: localStorage.getItem('currentPage') || 'feed',
+      dark: localStorage.getItem('dark') === 'true',
       followingIds: new Set(),
+      avatarColor: localStorage.getItem('avatarColor') || ''
     };
 
-    if (state.dark) document.documentElement.classList.add("dark");
+    if (state.dark) document.documentElement.classList.add('dark');
+
+    function saveCurrentPage(page) {
+      state.currentPage = page;
+      localStorage.setItem('currentPage', page);
+    }
 
     function apiCall(url, options = {}) {
-      const headers = {
-        "Content-Type": "application/json",
-        ...options.headers,
-      };
-      if (state.token) headers["Authorization"] = `Bearer ${state.token}`;
-      return fetch(API + url, { ...options, headers }).then((res) =>
-        res.json().then((data) => ({ status: res.status, ok: res.ok, data })),
-      );
+      const headers = { 'Content-Type': 'application/json', ...options.headers };
+      if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
+      return fetch(API + url, { ...options, headers })
+        .then(res => res.json().then(data => ({ status: res.status, ok: res.ok, data })));
     }
 
-    function isValidEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
+    function isValidEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
 
     async function loadFollowingIds() {
       if (!state.token) return;
       try {
-        const { data } = await apiCall("/me/following");
+        const { data } = await apiCall('/me/following');
         state.followingIds.clear();
-        if (data?.following)
-          data.following.forEach((u) => state.followingIds.add(u._id));
-      } catch (err) {
-        /* ignore */
-      }
+        if (data?.following) data.following.forEach(u => state.followingIds.add(u._id));
+      } catch (err) { /* ignore */ }
     }
 
     function showGuestLikePrompt() {
-      document.getElementById("guestLikeToast").classList.add("active");
+      document.getElementById('guestLikeToast').classList.add('active');
     }
     function hideGuestLikePrompt() {
-      document.getElementById("guestLikeToast").classList.remove("active");
+      document.getElementById('guestLikeToast').classList.remove('active');
     }
 
-    document.getElementById("toastLoginBtn").addEventListener("click", () => {
+    document.getElementById('toastLoginBtn').addEventListener('click', () => {
       hideGuestLikePrompt();
-      renderAuth("login", true);
+      renderAuth('login', true);
     });
-    document
-      .getElementById("toastCancelBtn")
-      .addEventListener("click", hideGuestLikePrompt);
+    document.getElementById('toastCancelBtn').addEventListener('click', hideGuestLikePrompt);
 
     // ---------- GUEST EXPLORE ----------
     function renderGuestExplore() {
-      const root = document.getElementById("appRoot");
+      const root = document.getElementById('appRoot');
       root.innerHTML = `
         <div class="app-header">
           <span class="logo">Kumora</span>
@@ -741,24 +701,19 @@
           </div>
         </div>
         <div class="main-app">
-          <div class="tab-nav">
-            <button class="tab-btn active" data-tab="explore">Explore</button>
-          </div>
           <div class="content-area" id="contentArea"></div>
           <div class="app-footer">Built by Kuku Mubaraq Afolabbi</div>
         </div>
       `;
-      document
-        .getElementById("loginLinkBtn")
-        .addEventListener("click", () => {
-          renderAuth("login", true);
-        });
+      document.getElementById('loginLinkBtn').addEventListener('click', () => {
+        renderAuth('login', true);
+      });
       loadExplore();
     }
 
     // ---------- AUTH SCREENS ----------
-    function renderAuth(screen = "login", showGuestLink = false) {
-      const root = document.getElementById("appRoot");
+    function renderAuth(screen = 'login', showGuestLink = false) {
+      const root = document.getElementById('appRoot');
       root.innerHTML = `
         <div class="app-header">
           <span class="logo">Kumora</span>
@@ -769,131 +724,110 @@
         <div class="main-app" style="display:flex; flex-direction:column; flex:1;">
           <div class="auth-container">
             <div class="auth-card">
-              <h1>${screen === "login" ? "Enter Kumora" : "Join Kumora"}</h1>
+              <h1>${screen === 'login' ? 'Enter Kumora' : 'Join Kumora'}</h1>
               <form id="authForm">
-                ${screen === "signup"
-          ? `
+                ${screen === 'signup' ? `
                   <div class="form-field"><input id="firstName" placeholder="First Name" required></div>
                   <div class="form-field"><input id="lastName" placeholder="Last Name" required></div>
                   <div class="form-field"><input id="username" placeholder="Username" required></div>
-                `
-          : ""
-        }
-                <div class="form-field"><input id="emailOrUser" placeholder="${screen === "signup" ? "Email" : "Email or Username"}" required></div>
+                ` : ''}
+                <div class="form-field"><input id="emailOrUser" placeholder="${screen === 'signup' ? 'Email' : 'Email or Username'}" required></div>
                 <div class="form-field password-wrapper">
                   <input id="password" type="password" placeholder="Password" required>
                   <i class="fas fa-eye password-toggle" id="togglePassword"></i>
                 </div>
-                <button type="submit" class="btn">${screen === "signup" ? "Sign Up" : "Log In"}</button>
+                <button type="submit" class="btn">${screen === 'signup' ? 'Sign Up' : 'Log In'}</button>
               </form>
               <p class="message" id="authMsg"></p>
-              <p class="toggle-link" id="toggleAuth">${screen === "login" ? "Don't have an account? Sign up" : "Already have an account? Log in"}</p>
-              ${showGuestLink ? `<p class="toggle-link" id="guestLink">Continue as guest</p>` : ""}
+              <p class="toggle-link" id="toggleAuth">${screen === 'login' ? "Don't have an account? Sign up" : "Already have an account? Log in"}</p>
+              ${showGuestLink ? `<p class="toggle-link" id="guestLink">Continue as guest</p>` : ''}
             </div>
           </div>
           <div class="app-footer">Built by Kuku Mubaraq Afolabbi</div>
         </div>
       `;
 
-      document.getElementById("toggleAuth")?.addEventListener("click", () => {
-        renderAuth(screen === "login" ? "signup" : "login", showGuestLink);
+      document.getElementById('toggleAuth')?.addEventListener('click', () => {
+        renderAuth(screen === 'login' ? 'signup' : 'login', showGuestLink);
       });
 
       if (showGuestLink) {
-        document
-          .getElementById("guestLink")
-          .addEventListener("click", () => renderGuestExplore());
+        document.getElementById('guestLink').addEventListener('click', () => renderGuestExplore());
       }
 
-      document
-        .getElementById("authForm")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const msg = document.getElementById("authMsg");
-          const password = document.getElementById("password").value;
+      document.getElementById('authForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('authMsg');
+        const password = document.getElementById('password').value;
 
-          if (screen === "signup") {
-            const email = document.getElementById("emailOrUser").value.trim();
-            if (!isValidEmail(email)) {
-              msg.className = "message error";
-              msg.textContent = "Please enter a valid email address.";
-              return;
-            }
+        if (screen === 'signup') {
+          const email = document.getElementById('emailOrUser').value.trim();
+          if (!isValidEmail(email)) {
+            msg.className = 'message error';
+            msg.textContent = 'Please enter a valid email address.';
+            return;
           }
+        }
 
-          try {
-            if (screen === "signup") {
-              const body = {
-                first_name: document.getElementById("firstName").value,
-                last_name: document.getElementById("lastName").value,
-                username: document.getElementById("username").value,
-                email: document.getElementById("emailOrUser").value,
-                password,
-              };
-              const { ok, data } = await apiCall("/auth/signup", {
-                method: "POST",
-                body: JSON.stringify(body),
-              });
-              if (ok) {
-                msg.className = "message success";
-                msg.textContent = "Account created! You can log in now.";
-                setTimeout(() => renderAuth("login", false), 1500);
-              } else {
-                msg.className = "message error";
-                msg.textContent = data.message || "Signup failed";
-              }
+        try {
+          if (screen === 'signup') {
+            const body = {
+              first_name: document.getElementById('firstName').value,
+              last_name: document.getElementById('lastName').value,
+              username: document.getElementById('username').value,
+              email: document.getElementById('emailOrUser').value,
+              password
+            };
+            const { ok, data } = await apiCall('/auth/signup', { method: 'POST', body: JSON.stringify(body) });
+            if (ok) {
+              msg.className = 'message success';
+              msg.textContent = 'Account created! You can log in now.';
+              setTimeout(() => renderAuth('login', false), 1500);
             } else {
-              const identifier = document.getElementById("emailOrUser").value;
-              const body = {
-                [identifier.includes("@") ? "email" : "username"]: identifier,
-                password,
-              };
-              const { ok, data } = await apiCall("/auth/signin", {
-                method: "POST",
-                body: JSON.stringify(body),
-              });
-              if (ok && data.token) {
-                state.token = data.token;
-                state.user = data.user;
-                localStorage.setItem("token", data.token);
-                localStorage.setItem("user", JSON.stringify(data.user));
-                await loadFollowingIds();
-                msg.className = "message success";
-                msg.textContent = "Logging in...";
-                renderMainApp();
-              } else {
-                msg.className = "message error";
-                msg.textContent = data.message || "Invalid credentials";
-              }
+              msg.className = 'message error';
+              msg.textContent = data.message || 'Signup failed';
             }
-          } catch (err) {
-            msg.className = "message error";
-            msg.textContent = "Network error. Please check your connection.";
+          } else {
+            const identifier = document.getElementById('emailOrUser').value;
+            const body = { [identifier.includes('@') ? 'email' : 'username']: identifier, password };
+            const { ok, data } = await apiCall('/auth/signin', { method: 'POST', body: JSON.stringify(body) });
+            if (ok && data.token) {
+              state.token = data.token;
+              state.user = data.user;
+              localStorage.setItem('token', data.token);
+              localStorage.setItem('user', JSON.stringify(data.user));
+              await loadFollowingIds();
+              msg.className = 'message success';
+              msg.textContent = 'Logging in...';
+              renderMainApp();
+            } else {
+              msg.className = 'message error';
+              msg.textContent = data.message || 'Invalid credentials';
+            }
           }
-        });
+        } catch (err) {
+          msg.className = 'message error';
+          msg.textContent = 'Network error. Please check your connection.';
+        }
+      });
 
-      const toggleBtn = document.getElementById("togglePassword");
+      const toggleBtn = document.getElementById('togglePassword');
       if (toggleBtn) {
-        toggleBtn.addEventListener("click", () => {
-          const pass = document.getElementById("password");
-          const isPassword = pass.type === "password";
-          pass.type = isPassword ? "text" : "password";
-          toggleBtn.className = isPassword
-            ? "fas fa-eye-slash password-toggle"
-            : "fas fa-eye password-toggle";
+        toggleBtn.addEventListener('click', () => {
+          const pass = document.getElementById('password');
+          const isPassword = pass.type === 'password';
+          pass.type = isPassword ? 'text' : 'password';
+          toggleBtn.className = isPassword ? 'fas fa-eye-slash password-toggle' : 'fas fa-eye password-toggle';
         });
       }
     }
 
     window.toggleTheme = function () {
       state.dark = !state.dark;
-      document.documentElement.classList.toggle("dark", state.dark);
-      localStorage.setItem("dark", state.dark.toString());
-      const toggleBtn = document.querySelector(".theme-toggle");
-      if (toggleBtn)
-        toggleBtn.innerHTML = state.dark
-          ? '<i class="fas fa-sun"></i>'
-          : '<i class="fas fa-moon"></i>';
+      document.documentElement.classList.toggle('dark', state.dark);
+      localStorage.setItem('dark', state.dark.toString());
+      const toggleBtn = document.querySelector('.theme-toggle');
+      if (toggleBtn) toggleBtn.innerHTML = state.dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
     };
 
     // ---------- MAIN APP (DASHBOARD) ----------
@@ -902,7 +836,7 @@
         if (state.followingIds.size === 0) await loadFollowingIds();
       }
 
-      const root = document.getElementById("appRoot");
+      const root = document.getElementById('appRoot');
       root.innerHTML = `
         <div class="app-header">
           <span class="logo">Kumora</span>
@@ -915,7 +849,7 @@
         </div>
         <div class="main-app">
           <div class="tab-nav">
-            <button class="tab-btn active" data-tab="feed">Feed</button>
+            <button class="tab-btn" data-tab="feed">Feed</button>
             <button class="tab-btn" data-tab="explore">Explore</button>
             <button class="tab-btn" data-tab="create">Create</button>
             <button class="tab-btn" data-tab="profile">Profile</button>
@@ -925,63 +859,69 @@
         </div>
       `;
 
-      document.getElementById("logoutBtn").addEventListener("click", () => {
-        localStorage.clear();
-        state.token = null;
-        state.user = null;
-        state.followingIds.clear();
-        renderAuth("login", true);
-      });
-
-      document.querySelectorAll(".tab-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          document
-            .querySelectorAll(".tab-btn")
-            .forEach((b) => b.classList.remove("active"));
-          btn.classList.add("active");
-          state.currentPage = btn.dataset.tab;
+      // Highlight the saved page
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        if (btn.dataset.tab === state.currentPage) btn.classList.add('active');
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          saveCurrentPage(btn.dataset.tab);
           loadContent(state.currentPage);
         });
       });
 
-      loadContent("feed");
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        // Only remove login-related items – keep avatarColor, dark, etc.
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('currentPage');
+        state.token = null;
+        state.user = null;
+        state.followingIds.clear();
+        renderAuth('login', true);
+      });
+
+      loadContent(state.currentPage);
     }
 
     async function loadContent(page) {
       switch (page) {
-        case "feed":
-          await loadFeed();
-          break;
-        case "explore":
-          await loadExplore();
-          break;
-        case "create":
-          renderCreatePost();
-          break;
-        case "profile":
-          await loadProfile();
-          break;
+        case 'feed': await loadFeed(); break;
+        case 'explore': await loadExplore(); break;
+        case 'create': renderCreatePost(); break;
+        case 'profile': await loadProfile(); break;
       }
     }
 
+    function renderPagination(current, total, loadFn) {
+      if (!total || total <= 1) return '';
+      const container = document.createElement('div');
+      container.className = 'pagination';
+      for (let i = 1; i <= total; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        if (i === current) btn.classList.add('active');
+        btn.addEventListener('click', () => loadFn(i));
+        container.appendChild(btn);
+      }
+      return container.outerHTML;
+    }
+
     async function loadFeed(pageNum = 1) {
-      const { data } = await apiCall(`/feed?page=${pageNum}&limit=10`);
-      let html = "";
-      if (data?.posts?.length)
-        data.posts.forEach((p) => (html += renderPostCard(p, false)));
-      else html = "<p>No posts in your feed. Follow some users!</p>";
-      html += pagination(pageNum, data?.totalPages, loadFeed);
-      document.getElementById("contentArea").innerHTML = html;
+      const { data } = await apiCall(`/feed?page=${pageNum}&limit=100`);
+      let html = '';
+      if (data?.posts?.length) data.posts.forEach(p => html += renderPostCard(p, false));
+      else html = '<p>No posts in your feed. Follow some users!</p>';
+      html += renderPagination(pageNum, data?.totalPages, loadFeed);
+      document.getElementById('contentArea').innerHTML = html;
       attachPostEvents();
     }
 
     async function loadExplore(pageNum = 1) {
       try {
-        const searchTitle =
-          document.getElementById("searchTitle")?.value || "";
-        const sort =
-          document.getElementById("sortSelect")?.value || "timestamp";
-        let url = `/posts?page=${pageNum}&limit=10&sort=${sort}`;
+        const searchTitle = document.getElementById('searchTitle')?.value || '';
+        const sort = document.getElementById('sortSelect')?.value || 'timestamp';
+        let url = `/posts?page=${pageNum}&limit=100&sort=${sort}`;
         if (searchTitle) url += `&title=${encodeURIComponent(searchTitle)}`;
 
         let result;
@@ -1008,24 +948,23 @@
           </div>
         `;
         if (data?.posts?.length) {
-          data.posts.forEach((p) => (html += renderPostCard(p, false)));
+          data.posts.forEach(p => html += renderPostCard(p, false));
         } else {
-          html += "<p>No published posts found.</p>";
+          html += '<p>No published posts found.</p>';
         }
-        html += pagination(pageNum, data?.totalPages, loadExplore);
-        document.getElementById("contentArea").innerHTML = html;
-        document
-          .getElementById("searchBtn")
-          ?.addEventListener("click", () => loadExplore(1));
+        html += renderPagination(pageNum, data?.totalPages, loadExplore);
+        document.getElementById('contentArea').innerHTML = html;
+        document.getElementById('searchBtn')?.addEventListener('click', () => loadExplore(1));
+        const sortSelect = document.getElementById('sortSelect');
+        if (sortSelect) sortSelect.addEventListener('change', () => loadExplore(1));
         attachPostEvents();
       } catch (err) {
-        document.getElementById("contentArea").innerHTML =
-          "<p>Error loading posts. Please try again later.</p>";
+        document.getElementById('contentArea').innerHTML = '<p>Error loading posts. Please try again later.</p>';
       }
     }
 
     function renderCreatePost() {
-      document.getElementById("contentArea").innerHTML = `
+      document.getElementById('contentArea').innerHTML = `
         <h3 style="margin-bottom:1rem;">✨ New Post</h3>
         <div class="form-field"><input id="newTitle" placeholder="Title"></div>
         <div class="form-field"><textarea id="newContent" rows="4" placeholder="What's on your mind?"></textarea></div>
@@ -1033,171 +972,171 @@
         <button class="btn" id="submitPost">Post as Draft</button>
         <p class="message" id="createMsg"></p>
       `;
-      document
-        .getElementById("submitPost")
-        .addEventListener("click", async () => {
-          const title = document.getElementById("newTitle").value;
-          const content = document.getElementById("newContent").value;
-          const tags = document
-            .getElementById("newTags")
-            .value.split(",")
-            .map((t) => t.trim())
-            .filter(Boolean);
-          const { ok, data } = await apiCall("/posts", {
-            method: "POST",
-            body: JSON.stringify({ title, content, tags }),
-          });
-          const msg = document.getElementById("createMsg");
-          msg.className = "message";
-          if (ok) {
-            msg.className += " success";
-            msg.textContent = "Post created (draft)!";
-            ["newTitle", "newContent", "newTags"].forEach(
-              (id) => (document.getElementById(id).value = ""),
-            );
-          } else {
-            msg.className += " error";
-            msg.textContent = data.message || "Failed";
-          }
-        });
+      document.getElementById('submitPost').addEventListener('click', async () => {
+        const title = document.getElementById('newTitle').value;
+        const content = document.getElementById('newContent').value;
+        const tags = document.getElementById('newTags').value.split(',').map(t => t.trim()).filter(Boolean);
+        const { ok, data } = await apiCall('/posts', { method: 'POST', body: JSON.stringify({ title, content, tags }) });
+        const msg = document.getElementById('createMsg');
+        msg.className = 'message';
+        if (ok) {
+          msg.className += ' success'; msg.textContent = 'Post created (draft)!';
+          ['newTitle', 'newContent', 'newTags'].forEach(id => document.getElementById(id).value = '');
+        } else {
+          msg.className += ' error'; msg.textContent = data.message || 'Failed';
+        }
+      });
     }
 
     async function loadProfile() {
-      const { data: myPosts } = await apiCall("/me/posts?limit=5");
-      const { data: following } = await apiCall("/me/following");
+      const { data: myPosts } = await apiCall('/me/posts?limit=5');
+      const { data: following } = await apiCall('/me/following');
 
       state.followingIds.clear();
-      if (following?.following)
-        following.following.forEach((u) => state.followingIds.add(u._id));
+      if (following?.following) following.following.forEach(u => state.followingIds.add(u._id));
 
       let html = `
         <div style="text-align:center; margin-bottom:1.5rem;">
-          <div class="avatar" style="width:70px; height:70px; font-size:2rem; margin:0 auto;">${state.user.username.charAt(0).toUpperCase()}</div>
+          <div class="avatar" id="profileAvatar" style="width:70px; height:70px; font-size:2rem; margin:0 auto; background: ${state.avatarColor || 'var(--logo-gradient)'};">${state.user.username.charAt(0).toUpperCase()}</div>
           <h2>${state.user.username}</h2>
           <p style="color:var(--text-secondary);">${state.user.first_name} ${state.user.last_name}</p>
+          <div class="avatar-color-picker" id="colorPicker">
+            <div class="color-circle" style="background: #d4a373;" data-color="#d4a373"></div>
+            <div class="color-circle" style="background: #e76f51;" data-color="#e76f51"></div>
+            <div class="color-circle" style="background: #2a9d8f;" data-color="#2a9d8f"></div>
+            <div class="color-circle" style="background: #264653;" data-color="#264653"></div>
+            <div class="color-circle" style="background: #e9c46a;" data-color="#e9c46a"></div>
+          </div>
         </div>
         <h3 style="margin-bottom: 0.8rem;">My Posts</h3>
         <div class="custom-select" style="margin-bottom:1rem;">
           <select id="stateFilter">
             <option value="">All</option>
-            <option value="draft">Drafts</option>
+            <option value="draft" selected>Drafts</option>
             <option value="published">Published</option>
           </select>
         </div>
         <div id="profilePosts"></div>
-
         <div style="margin-top: 2rem;">
-          <button class="btn outline" id="showFollowingBtn">Show Following</button>
-          <div id="followingSection" style="display:none; margin-top: 1rem;">
-            <h3 style="margin-bottom: 0.8rem;">Following (${following?.following?.length || 0})</h3>
-            <div id="followingList" style="margin-bottom: 1.2rem;"></div>
-          </div>
-          <button class="btn outline" id="showFollowersBtn" style="margin-top: 0.5rem;">Show Followers</button>
-          <div id="followersList" style="display:none; margin-top: 1.2rem;"></div>
+          <h3 style="margin-bottom: 0.5rem;">Following (${following?.following?.length || 0})</h3>
+          <button class="btn outline" id="showFollowingBtn" style="width:auto; padding:6px 14px; font-size:0.8rem; margin-bottom:1rem;">Show Following</button>
+          <div id="followingList" style="display:none;"></div>
+        </div>
+        <div style="margin-top: 1rem;">
+          <h3 style="margin-bottom: 0.5rem;">Followers</h3>
+          <button class="btn outline" id="showFollowersBtn" style="width:auto; padding:6px 14px; font-size:0.8rem; margin-bottom:1rem;">Show Followers</button>
+          <div id="followersList" style="display:none;"></div>
         </div>
       `;
-      document.getElementById("contentArea").innerHTML = html;
+      document.getElementById('contentArea').innerHTML = html;
 
+      // Color picker logic
+      document.querySelectorAll('.color-circle').forEach(circle => {
+        circle.addEventListener('click', () => {
+          state.avatarColor = circle.dataset.color;
+          localStorage.setItem('avatarColor', state.avatarColor);
+          document.getElementById('profileAvatar').style.background = state.avatarColor;
+          document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('selected'));
+          circle.classList.add('selected');
+        });
+      });
+      if (state.avatarColor) {
+        const active = document.querySelector(`.color-circle[data-color="${state.avatarColor}"]`);
+        if (active) active.classList.add('selected');
+      }
+
+      // Profile posts with state filter (default: drafts)
       async function loadProfilePosts() {
-        const stateFilter = document.getElementById("stateFilter").value;
+        const stateFilter = document.getElementById('stateFilter').value;
         let url = `/me/posts?limit=5`;
         if (stateFilter) url += `&state=${stateFilter}`;
         const { data } = await apiCall(url);
-        document.getElementById("profilePosts").innerHTML = data.posts
-          .map((p) => renderPostCard(p, true))
-          .join("");
+        document.getElementById('profilePosts').innerHTML = data.posts.map(p => renderPostCard(p, true)).join('');
         attachPostEvents();
       }
-      document
-        .getElementById("stateFilter")
-        .addEventListener("change", loadProfilePosts);
+      document.getElementById('stateFilter').addEventListener('change', loadProfilePosts);
+      // Load drafts by default
       loadProfilePosts();
 
-      // Build the following list (done once, hidden)
+      // Following list building
       let followingListBuilt = false;
       function buildFollowingList() {
         if (followingListBuilt) return;
-        if (following?.following) {
-          document.getElementById("followingList").innerHTML =
-            following.following
-              .map(
-                (u) => `
+        const listDiv = document.getElementById('followingList');
+        if (following?.following && following.following.length) {
+          listDiv.innerHTML = following.following.map(u => `
             <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:10px;">
-              <span>${u.username}</span>
-              <button class="btn outline" onclick="unfollowUser('${u._id}')" style="width:auto; padding:4px 12px; font-size:0.8rem;">Unfollow</button>
-            </div>`,
-              )
-              .join("");
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div class="avatar" style="width:36px; height:36px; font-size:1rem;">${u.username.charAt(0).toUpperCase()}</div>
+                <span>${u.username}</span>
+              </div>
+              <button class="btn outline unfollow-btn" data-userid="${u._id}" style="width:auto; padding:4px 12px; font-size:0.8rem;">Unfollow</button>
+            </div>`).join('');
+          listDiv.querySelectorAll('.unfollow-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+              const userId = e.target.dataset.userid;
+              await apiCall(`/me/follow/${userId}`, { method: 'DELETE' });
+              state.followingIds.delete(userId);
+              loadProfile();
+            });
+          });
         } else {
-          document.getElementById("followingList").innerHTML =
-            "<p>Not following anyone yet.</p>";
+          listDiv.innerHTML = '<p>Not following anyone yet.</p>';
         }
         followingListBuilt = true;
       }
-      buildFollowingList(); // prepare it
+      buildFollowingList();
 
       // Show/Hide Following
-      document
-        .getElementById("showFollowingBtn")
-        .addEventListener("click", () => {
-          const section = document.getElementById("followingSection");
-          if (section.style.display === "none") {
-            section.style.display = "block";
-            document.getElementById("showFollowingBtn").textContent =
-              "Hide Following";
-          } else {
-            section.style.display = "none";
-            document.getElementById("showFollowingBtn").textContent =
-              "Show Following";
-          }
-        });
+      document.getElementById('showFollowingBtn').addEventListener('click', () => {
+        const listDiv = document.getElementById('followingList');
+        if (listDiv.style.display === 'none') {
+          listDiv.style.display = 'block';
+          document.getElementById('showFollowingBtn').textContent = 'Hide Following';
+          buildFollowingList();
+        } else {
+          listDiv.style.display = 'none';
+          document.getElementById('showFollowingBtn').textContent = 'Show Following';
+        }
+      });
 
-      // Unfollow from profile page
-      window.unfollowUser = async (userId) => {
-        await apiCall(`/me/follow/${userId}`, { method: "DELETE" });
-        state.followingIds.delete(userId);
-        loadProfile(); // re-render to update lists
-      };
-
-      // Show/Hide Followers
-      document
-        .getElementById("showFollowersBtn")
-        .addEventListener("click", async () => {
-          const div = document.getElementById("followersList");
-          if (div.style.display === "none") {
-            const { data } = await apiCall("/me/followers");
-            div.innerHTML =
-              "<h4>Followers</h4>" +
-              (data.followers
-                ? data.followers.map((u) => `<p>${u.username}</p>`).join("")
-                : "<p>None</p>");
-            div.style.display = "block";
+      // Followers
+      document.getElementById('showFollowersBtn').addEventListener('click', async () => {
+        const listDiv = document.getElementById('followersList');
+        if (listDiv.style.display === 'none') {
+          const { data } = await apiCall('/me/followers');
+          if (data?.followers?.length) {
+            listDiv.innerHTML = data.followers.map(u => `
+              <div class="card" style="display:flex; align-items:center; gap:10px; padding:10px;">
+                <div class="avatar" style="width:36px; height:36px; font-size:1rem;">${u.username.charAt(0).toUpperCase()}</div>
+                <span>${u.username}</span>
+              </div>`).join('');
           } else {
-            div.style.display = "none";
+            listDiv.innerHTML = '<p>No followers yet.</p>';
           }
-        });
+          listDiv.style.display = 'block';
+          document.getElementById('showFollowersBtn').textContent = 'Hide Followers';
+        } else {
+          listDiv.style.display = 'none';
+          document.getElementById('showFollowersBtn').textContent = 'Show Followers';
+        }
+      });
     }
 
     function renderPostCard(post, isOwner = false) {
-      const authorName = post.author
-        ? `${post.author.first_name} ${post.author.last_name}`
-        : "Unknown";
-      const avatarLetter = (post.author?.username || "?")[0].toUpperCase();
-      const stateBadge =
-        post.state === "draft"
-          ? '<span style="background:var(--accent); color:white; padding:2px 8px; border-radius:10px; font-size:0.7rem;">Draft</span>'
-          : "";
-
-      let followBtnHtml = "";
+      const authorName = post.author ? `${post.author.first_name} ${post.author.last_name}` : 'Unknown';
+      const avatarLetter = (post.author?.username || '?')[0].toUpperCase();
+      const avatarBg = (post.author?._id === state.user?.id && state.avatarColor) ? state.avatarColor : 'var(--logo-gradient)';
+      const stateBadge = post.state === 'draft' ? '<span style="background:var(--accent); color:white; padding:2px 8px; border-radius:10px; font-size:0.7rem;">Draft</span>' : '';
+      let followBtnHtml = '';
       if (state.token && !isOwner && post.author?._id) {
         const isFollowing = state.followingIds.has(post.author._id);
-        followBtnHtml = `<button class="follow-btn ${isFollowing ? "following" : ""}" data-author-id="${post.author._id}" data-action="follow-toggle">${isFollowing ? "Unfollow" : "Follow"}</button>`;
+        followBtnHtml = `<button class="follow-btn ${isFollowing ? 'following' : ''}" data-author-id="${post.author._id}" data-action="follow-toggle">${isFollowing ? 'Unfollow' : 'Follow'}</button>`;
       }
-
       return `
         <div class="card" data-post-id="${post._id}">
           <div class="card-header">
-            <div class="avatar">${avatarLetter}</div>
+            <div class="avatar" style="background: ${avatarBg};">${avatarLetter}</div>
             <div>
               <span class="username">${authorName} ${stateBadge}</span>
               <div class="time">${new Date(post.createdAt).toLocaleString()}</div>
@@ -1205,150 +1144,97 @@
           </div>
           <div class="post-title">${post.title}</div>
           <div class="post-text">${post.content}</div>
-          <div class="tags">${post.tags?.map((t) => `<span class="tag">${t}</span>`).join("") || ""}</div>
+          <div class="tags">${post.tags?.map(t => `<span class="tag">${t}</span>`).join('') || ''}</div>
           <div class="actions">
-            <i class="${post.likedByMe ? "fas fa-heart liked" : "far fa-heart"}" data-action="like"></i>
+            <i class="${post.likedByMe ? 'fas fa-heart liked' : 'far fa-heart'}" data-action="like"></i>
             <span class="like-count">${post.like_count}</span>
             ${followBtnHtml}
           </div>
-          ${isOwner
-          ? `
+          ${isOwner ? `
             <div class="owner-actions">
-              <button class="publish" data-action="publish" ${post.state === "published" ? "disabled" : ""}>Publish</button>
+              <button class="publish" data-action="publish" ${post.state === 'published' ? 'disabled' : ''}>Publish</button>
               <button data-action="edit">Edit</button>
               <button class="danger" data-action="delete">Delete</button>
-            </div>`
-          : ""
-        }
+            </div>` : ''}
         </div>`;
     }
 
     function attachPostEvents() {
-      // Like button
-      document.querySelectorAll('[data-action="like"]').forEach((btn) => {
-        btn.addEventListener("click", async (e) => {
+      document.querySelectorAll('[data-action="like"]').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
           if (!state.token) {
             showGuestLikePrompt();
             return;
           }
-          const card = e.target.closest(".card");
+          const card = e.target.closest('.card');
           const postId = card.dataset.postId;
-          const method = e.target.classList.contains("liked")
-            ? "DELETE"
-            : "POST";
+          const method = e.target.classList.contains('liked') ? 'DELETE' : 'POST';
           const { ok } = await apiCall(`/posts/${postId}/like`, { method });
           if (ok) {
-            e.target.classList.toggle("liked");
-            e.target.classList.toggle("far");
-            e.target.classList.toggle("fas");
-            const countSpan = card.querySelector(".like-count");
+            e.target.classList.toggle('liked'); e.target.classList.toggle('far'); e.target.classList.toggle('fas');
+            e.target.classList.add('like-animate');
+            setTimeout(() => e.target.classList.remove('like-animate'), 200);
+            const countSpan = card.querySelector('.like-count');
             let count = parseInt(countSpan.textContent);
-            count = method === "POST" ? count + 1 : Math.max(0, count - 1);
+            count = method === 'POST' ? count + 1 : Math.max(0, count - 1);
             countSpan.textContent = count;
           }
         });
       });
 
-      // Follow / Unfollow button
-      document
-        .querySelectorAll('[data-action="follow-toggle"]')
-        .forEach((btn) => {
-          btn.addEventListener("click", async (e) => {
-            const authorId = e.target.dataset.authorId;
-            const isFollowing = state.followingIds.has(authorId);
-            const method = isFollowing ? "DELETE" : "POST";
-            const { ok } = await apiCall(`/me/follow/${authorId}`, {
-              method,
-            });
-            if (ok) {
-              if (isFollowing) {
-                state.followingIds.delete(authorId);
-                e.target.classList.remove("following");
-                e.target.textContent = "Follow";
-              } else {
-                state.followingIds.add(authorId);
-                e.target.classList.add("following");
-                e.target.textContent = "Unfollow";
-              }
+      document.querySelectorAll('[data-action="follow-toggle"]').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const authorId = e.target.dataset.authorId;
+          const isFollowing = state.followingIds.has(authorId);
+          const method = isFollowing ? 'DELETE' : 'POST';
+          const { ok } = await apiCall(`/me/follow/${authorId}`, { method });
+          if (ok) {
+            if (isFollowing) {
+              state.followingIds.delete(authorId);
+              e.target.classList.remove('following');
+              e.target.textContent = 'Follow';
+            } else {
+              state.followingIds.add(authorId);
+              e.target.classList.add('following');
+              e.target.textContent = 'Unfollow';
             }
-          });
+          }
         });
-
-      // Publish
-      document.querySelectorAll('[data-action="publish"]').forEach((btn) =>
-        btn.addEventListener("click", async (e) => {
-          const postId = e.target.closest(".card").dataset.postId;
-          await apiCall(`/posts/${postId}/publish`, { method: "PUT" });
-          loadContent(state.currentPage);
-        }),
-      );
-
-      // Edit
-      document.querySelectorAll('[data-action="edit"]').forEach((btn) =>
-        btn.addEventListener("click", (e) => {
-          const card = e.target.closest(".card");
-          document.getElementById("editId").value = card.dataset.postId;
-          document.getElementById("editTitle").value =
-            card.querySelector(".post-title").textContent;
-          document.getElementById("editContent").value =
-            card.querySelector(".post-text").textContent;
-          document.getElementById("editTags").value = Array.from(
-            card.querySelectorAll(".tag"),
-          )
-            .map((t) => t.textContent)
-            .join(", ");
-          document.getElementById("editModal").classList.add("active");
-        }),
-      );
-
-      // Delete
-      document.querySelectorAll('[data-action="delete"]').forEach((btn) =>
-        btn.addEventListener("click", async (e) => {
-          if (!confirm("Delete?")) return;
-          const postId = e.target.closest(".card").dataset.postId;
-          await apiCall(`/posts/${postId}`, { method: "DELETE" });
-          loadContent(state.currentPage);
-        }),
-      );
-    }
-
-    document
-      .getElementById("saveEditBtn")
-      .addEventListener("click", async () => {
-        const id = document.getElementById("editId").value;
-        const title = document.getElementById("editTitle").value;
-        const content = document.getElementById("editContent").value;
-        const tags = document
-          .getElementById("editTags")
-          .value.split(",")
-          .map((t) => t.trim())
-          .filter(Boolean);
-        const { ok, data } = await apiCall(`/posts/${id}`, {
-          method: "PATCH",
-          body: JSON.stringify({ title, content, tags }),
-        });
-        if (ok) {
-          document.getElementById("editModal").classList.remove("active");
-          loadContent(state.currentPage);
-        } else {
-          document.getElementById("editMsg").textContent =
-            data.message || "Error";
-        }
       });
-    document
-      .getElementById("cancelEditBtn")
-      .addEventListener("click", () =>
-        document.getElementById("editModal").classList.remove("active"),
-      );
 
-    function pagination(current, total, loadFn) {
-      if (!total || total <= 1) return "";
-      let html = '<div class="pagination">';
-      for (let i = 1; i <= total; i++)
-        html += `<button class="${i === current ? "active" : ""}" onclick="(${loadFn.toString().replace(/\s/g, "")})(event, ${i})">${i}</button>`;
-      html += "</div>";
-      return html;
+      document.querySelectorAll('[data-action="publish"]').forEach(btn => btn.addEventListener('click', async (e) => {
+        const postId = e.target.closest('.card').dataset.postId;
+        await apiCall(`/posts/${postId}/publish`, { method: 'PUT' });
+        loadContent(state.currentPage);
+      }));
+
+      document.querySelectorAll('[data-action="edit"]').forEach(btn => btn.addEventListener('click', (e) => {
+        const card = e.target.closest('.card');
+        document.getElementById('editId').value = card.dataset.postId;
+        document.getElementById('editTitle').value = card.querySelector('.post-title').textContent;
+        document.getElementById('editContent').value = card.querySelector('.post-text').textContent;
+        document.getElementById('editTags').value = Array.from(card.querySelectorAll('.tag')).map(t => t.textContent).join(', ');
+        document.getElementById('editModal').classList.add('active');
+      }));
+
+      document.querySelectorAll('[data-action="delete"]').forEach(btn => btn.addEventListener('click', async (e) => {
+        if (!confirm('Delete?')) return;
+        const postId = e.target.closest('.card').dataset.postId;
+        await apiCall(`/posts/${postId}`, { method: 'DELETE' });
+        loadContent(state.currentPage);
+      }));
     }
+
+    document.getElementById('saveEditBtn').addEventListener('click', async () => {
+      const id = document.getElementById('editId').value;
+      const title = document.getElementById('editTitle').value;
+      const content = document.getElementById('editContent').value;
+      const tags = document.getElementById('editTags').value.split(',').map(t => t.trim()).filter(Boolean);
+      const { ok, data } = await apiCall(`/posts/${id}`, { method: 'PATCH', body: JSON.stringify({ title, content, tags }) });
+      if (ok) { document.getElementById('editModal').classList.remove('active'); loadContent(state.currentPage); }
+      else { document.getElementById('editMsg').textContent = data.message || 'Error'; }
+    });
+    document.getElementById('cancelEditBtn').addEventListener('click', () => document.getElementById('editModal').classList.remove('active'));
 
     // ---------- INITIAL LOAD ----------
     if (state.token && state.user) {
